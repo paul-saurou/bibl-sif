@@ -245,3 +245,64 @@
 	isbn         = {978-3-642-01956-2},
 	abstractnote = {A large variety of side channel analyses performed on embedded devices involve the linear correlation coefficient as wrong-key distinguisher. This coefficient is actually a sound statistical tool to quantify linear dependencies between univariate variables. However, when those dependencies are non-linear, the correlation coefficient stops being pertinent so that another statistical tool must be investigated. Recent works showed that the Mutual Information measure is a promising candidate, since it detects any kind of statistical dependency. Substituting it for the correlation coefficient may therefore be considered as a natural extension of the existing attacks. Nevertheless, the first applications published at CHES 2008 have revealed several limitations of the approach and have raised several questions. In this paper, an in-depth analysis of side channel attacks involving the mutual information is conducted. We expose their theoretical foundations and we assess their limitations and assets. Also, we generalize them to higher orders where they seem to be an efficient alternative to the existing attacks. Eventually, we provide simulations and practical experiments that validate our theoretical analyses.}
 }
+@inbook{Barthe_Dupressoir_Faust_Grégoire_Standaert_Strub_2017,
+	title        = {Parallel Implementations of Masking Schemes and the Bounded Moment Leakage Model},
+	author       = {Barthe, Gilles and Dupressoir, François and Faust, Sebastian and Grégoire, Benjamin and Standaert, François-Xavier and Strub, Pierre-Yves},
+	year         = 2017,
+	booktitle    = {Advances in Cryptology – EUROCRYPT 2017},
+	publisher    = {Springer International Publishing},
+	address      = {Cham},
+	series       = {Lecture Notes in Computer Science},
+	volume       = 10210,
+	pages        = {535–566},
+	doi          = {10.1007/978-3-319-56620-7_19},
+	isbn         = {978-3-319-56619-1},
+	url          = {http://link.springer.com/10.1007/978-3-319-56620-7_19},
+	abstractnote = {In this paper, we provide a necessary clariﬁcation of the good security properties that can be obtained from parallel implementations of masking schemes. For this purpose, we ﬁrst argue that (i) the probing model is not straightforward to interpret, since it more naturally captures the intuitions of serial implementations, and (ii) the noisy leakage model is not always convenient, e.g. when combined with formal methods for the veriﬁcation of cryptographic implementations. Therefore we introduce a new model, the bounded moment model, that formalizes a weaker notion of security order frequently used in the side-channel literature. Interestingly, we prove that probing security for a serial implementation implies bounded moment security for its parallel counterpart. This result therefore enables an accurate understanding of the links between formal security analyses of masking schemes and experimental security evaluations based on the estimation of statistical moments. Besides its consolidating nature, our work also brings useful technical contributions. First, we describe and analyze refreshing and multiplication algorithms that are well suited for parallel implementations and improve security against multivariate side-channel attacks. Second, we show that simple refreshing algorithms (with linear complexity) that are not secure in the continuous probing model are secure in the continuous bounded moment model. Eventually, we discuss the independent leakage assumption required for masking to deliver its security promises, and its speciﬁcities related to the serial or parallel nature of an implementation.},
+	editor       = {Coron, Jean-Sébastien and Nielsen, Jesper Buus},
+	collection   = {Lecture Notes in Computer Science},
+	language     = {en}
+}
+@article{Biryukov_Shamir,
+	title        = {Structural Cryptanalysis of SASAS},
+	author       = {Biryukov, Alex and Shamir, Adi},
+	pages        = 12,
+	abstractnote = {In this paper we consider the security of block ciphers which contain alternate layers of invertible S-boxes and aﬃne mappings (there are many popular cryptosystems which use this structure, including the winner of the AES competition, Rijndael). We show that a ﬁve layer scheme with 128 bit plaintexts and 8 bit S-boxes is surprisingly weak even when all the S-boxes and aﬃne mappings are key dependent (and thus completely unknown to the attacker). We tested the attack with an actual implementation, which required just 216 chosen plaintexts and a few seconds on a single PC to ﬁnd the 217 bits of information in all the unknown elements of the scheme.},
+	language     = {en}
+}
+@article{Standards2001,
+	title        = {Advanced Encryption Standard},
+	author       = {National Institute of Standards and Technology},
+	year         = 2001,
+	journal      = {NIST FIPS PUB 197},
+	date-modified = {2006-08-22 11:34:23 +0200}
+}
+@inbook{Peeters_Standaert_Donckers_Quisquater_2005,
+	title        = {Improved Higher-Order Side-Channel Attacks with FPGA Experiments},
+	author       = {Peeters, Eric and Standaert, François-Xavier and Donckers, Nicolas and Quisquater, Jean-Jacques},
+	year         = 2005,
+	booktitle    = {Cryptographic Hardware and Embedded Systems – CHES 2005},
+	publisher    = {Springer Berlin Heidelberg},
+	address      = {Berlin, Heidelberg},
+	series       = {Lecture Notes in Computer Science},
+	volume       = 3659,
+	pages        = {309–323},
+	doi          = {10.1007/11545262_23},
+	isbn         = {978-3-540-28474-1},
+	url          = {http://link.springer.com/10.1007/11545262_23},
+	abstractnote = {We demonstrate that masking a block cipher implementation does not suﬃciently improve its security against side-channel attacks. Under exactly the same hypotheses as in a Diﬀerential Power Analysis (DPA), we describe an improvement of the previously introduced higherorder techniques allowing us to defeat masked implementations in a low (i.e. practically tractable) number of measurements. The proposed technique is based on the eﬃcient use of the statistical distributions of the power consumption in an actual design. It is conﬁrmed both by theoretical predictions and practical experiments against FPGA devices.},
+	editor       = {Rao, Josyula R. and Sunar, Berk},
+	collection   = {Lecture Notes in Computer Science},
+	language     = {en}
+}
+@inproceedings{Standaert_Ors_Preneel_2004,
+	title        = {Power Analysis of an FPGA: Implementation of Rijndael: Is Pipelining a DPA Countermeasure?},
+	author       = {Standaert, François-Xavier and Ors, Berna and Preneel, Bart},
+	year         = 2004,
+	month        = {Jan},
+	volume       = 3156,
+	pages        = {30–44},
+	doi          = {10.1007/b99451},
+	abstractnote = {In the execution on a smart card, side channel attacks such as simple power analysis (SPA) and the differential power analysis (DPA) have become serious threat. Side channel attacks monitor power consumption and even exploit the leakage information related to power consumption to reveal bits of a secret key d although d is hidden inside a smart card. Almost public key cryptosystems including RSA, DLP-based cryptosystems, and elliptic curve cryptosystems execute an exponentiation algorithm with a secret-key exponent, and they thus suffer from both SPA and DPA. Recently, in the case of elliptic curve cryptosystems, DPA is improved to the Refined Power Analysis (RPA), which exploits a special point with a zero value and reveals a secret key. RPA is further generalized to Zero-value Point Attack (ZPA). Both RPA and ZPA utilizes a special feature of elliptic curves that happens to have a special point or a register used in addition and doubling formulae with a zero value and that the power consumption of 0 is distinguishable from that of an non-zero element. To make the matters worse, some previous efficient countermeasures are neither resistant against RPA nor ZPA. Although a countermeasure to RPA is proposed, this is not a universal countermeasure, gives each different method to each type of elliptic curves, and is still vulnerable against ZPA. The possible countermeasures are ES and the improved version. This paper focuses on countermeasures against RPA, ZPA, DPA and SPA. We show a novel countermeasure resistant against RPA, ZPA, SPA and DPA without any pre-computed table. We also generalize the countermeasure to present more efficient algorithm with a pre-computed table.}
+}
+

@@ -47,7 +47,7 @@ Attaque SCARE en clair connu qui suppose un modèle et regarde s'il est cohéren
 FIRE (injection fault attempts) and SCARE attacks to recover the full set of secret parameters of an AES-like software implementation, even with masking and shuffling. It uses a chosen plaintext scenario. The attack does not work on hardware implementations.
 
 ### Commentaire
-Attaque bien détaillée et testée sur une implémentation logicielle. Dommage que l'attaque ne fonctionne pas sur le hardware (à cause du bruit je crois). A lire plus en détail quand même. Il reste aussi à fouiller sa biblio.
+Attaque bien détaillée et testée sur une implémentation logicielle. Dommage que l'attaque ne fonctionne pas sur le hardware (à cause du bruit je crois). A lire plus en détail quand même.
 
 
 ## [Réal, Dubois et al] SCARE of an Unknown Hardware Feistel Implementation.
@@ -69,6 +69,50 @@ This paper presents template attacks, "the strongest form of side channel attack
 ### Commentaire
 Papier de référence sur les template attacks. Peut servir si on a accès à très peu de mesures de la cible mais nécessite une bonne connaissance de l'architecture cible (ce qui n'est pas notre cas).
 
+
+## [Tiessen et al] Security of the AES with a Secret S-Box ».
+- Tiessen_Knudsen_Kölbl_Lauridsen_2015
+
+### Short summary
+This paper presents an attack on AES with a secret S-box and less rounds. The attack is based on integral cryptanalysis to recover both the key and the S-box. The attacker model is chosen plaintext or chosen ciphertext.
+
+### Commentaire
+Ce ne sont pas des side-channels mais c'est le système qu'on veut casser. Très intéressant (résumé plus détaillé à venir).
+Une attaque SQUARE (similaire à celle là) est expliquée ici: https://www.davidwong.fr/blockbreakers/square.html.
+Les concepts utilisés (notamment les propriétés sur les $\Delta$-sets) sont tirés de ce papier : Biryukov_Shamir
+
+---
+
+## [Prouff and Rivain] Theoretical and Practical Aspects of Mutual Information Based Side Channel Analysis.
+- Prouff_Rivain_1970
+
+### Short summary
+This paper presents the theory of Mutual Information Attacks (MIA) in side channels. It is an attack based on entropy and mutual information between the leakage and the predicted data. It does not require any prealable knowledge of the studied device and can be applied in any context. When in the Hamming weight model, it performs worse than CPA on a DES implementation but could retrieve the key in a context where CPA gives no result due to a different leakage.
+
+### Commentaire
+Ca a l'air très théorique et je ne comprends pas comment la mettre en pratique mais l'approche théorique et l'absence d'a priori peuvent servir.
+
+
+## [Guilley, Hoogvorst et al] Improving Side-Channel Attacks by Exploiting Substitution Boxes Properties.
+- Guilley_Hoogvorst_Pacalet_Schmidt_2007
+
+### Short summary
+This paper presents a CPA attack on CMOS. It uses the Hamming weight model and a new distinguisher based on a maximum likelihood estimator. It is applied on DES and there are some considerations about noise. The attack exploits the mathematical properties of S boxes.
+
+### Commentaire
+L'explication des attaques "template" et "correlation" est très claire. L'estimateur utilisé peut être intéressant.
+
+
+## [Barthe et al] Parallel Implementations of Masking Schemes and the Bounded Moment Leakage Model.
+- Barthe_Dupressoir_Faust_Grégoire_Standaert_Strub_2017
+
+### Short summary
+This paper introduces a formal model to analyse parallel masked cryptographic implementations. It compares it to serial implementations on side channel leakages and masking schemes utility. It also presents refreshing and multiplication algorithm for parallel implementations and focuses on some examples, including s-boxes.
+
+### Commentaire
+Probablement trop théorique et pas assez axé sur l'attaque mais discute sur les liens entre les implémentations "software" en série et les implémentations "hardware" en parallèle.
+
+---
 
 ## [Roche and Lomné] Collision-correlation attack against some 1st-order boolean masking schemes in the context of secure devices.
 - Roche_Lomné_2013
@@ -108,34 +152,3 @@ This paper presents a reverse engineering of embedded software. It finds the ins
 
 ### Commentaire
 Assez hors sujet. Trouver des patterns est une idée intéressante mais on ne le fera pas comme ça et pas dans ce cas d'usage.
-
-
-## [Prouff and Rivain] Theoretical and Practical Aspects of Mutual Information Based Side Channel Analysis.
-- Prouff_Rivain_1970
-
-### Short summary
-
-
-### Commentaire
-
-
-
-## [Tiessen et al] Security of the AES with a Secret S-Box ».
-- Tiessen_Knudsen_Kölbl_Lauridsen_2015
-
-### Short summary
-
-
-### Commentaire
-
-
-
-## [Guilley, Hoogvorst et al] Improving Side-Channel Attacks by Exploiting Substitution Boxes Properties.
-- Guilley_Hoogvorst_Pacalet_Schmidt_2007
-
-### Short summary
-
-
-### Commentaire
-
-
