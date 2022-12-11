@@ -12,6 +12,18 @@
 
 Instructions about template and bibliography content: https://gitlab.inria.fr/grossamb/m2sif/-/wikis/Bibliographic-study-(BIBL)
 
+## How to compile the bibliographic report
+- Create a `modele-bib-SIF` folder
+- Put the reference template in it
+- Run the following commands from the root of the repository
+```bash
+cd modele-bib-SIF
+pdflatex ../biblio
+biber -input_directory=../ biblio
+pdflatex ../biblio
+cp biblio.pdf ../
+cd ..
+```
 
 ## Progress of the bibliography
 

@@ -1,0 +1,150 @@
+\documentclass[11pt]{sdm}
+\usepackage{graphicx}
+\usepackage[style=authoryear, backend=biber]{biblatex}
+\addbibresource{Biblio.bib}
+
+%numeroter les pages
+\pagestyle{plain}
+
+\title{SCARE for Hardware SPN}
+\author{First\_Name \textsc{Name}}
+\supervisorOne{First\_Name \textsc{Name} of your first supervisor}
+\supervisorTwo{First\_Name \textsc{Name} of your second supervisor}
+\team{Name of the team in which you are doing your internship}
+%One of:
+% ens-Rennes  esir    insa-rennes   rennes1  
+% enssat    logoUbs   tsupelec
+%here rennes1 for example
+\school{supelec}
+
+
+% the domain should be one or two of:
+% Technology for Human Learning 
+% Artificial Intelligence 
+% Computer Arithmetic
+% Hardware Architecture
+% Automatic Control Engineering
+% Bioinformatics 
+% Biotechnology
+% Computational Complexity 
+% Computational Engineering, Finance, and Science
+% Computational Geometry 
+% Computation and Language 
+% Cryptography and Security 
+% Computer Vision and Pattern Recognition
+% Computers and Society 
+% Databases 
+% Distributed, Parallel, and Cluster Computing 
+% Digital Libraries
+% Discrete Mathematics 
+% Data Structures and Algorithms 
+% Embedded Systems 
+% Emerging Technologies 
+% Formal Languages and Automata Theory 
+% General Literature 
+% Graphics 
+% Computer Science and Game Theory 
+% Human-Computer Interaction 
+% Computer Aided Engineering 
+% Medical Imaging 
+% Information Retrieval 
+% Information Theory 
+% Ubiquitous Computing 
+% Machine Learning
+% Logic in Computer Science 
+% Multiagent Systems 
+% Mobile Computing
+% Multimedia
+% Modeling and Simulation 
+% Mathematical Software 
+% Numerical Analysis 
+% Neural and Evolutionary Computing 
+% Networking and Internet Architecture 
+% Operating Systems 
+% Performance 
+% Programming Languages 
+% Robotics 
+% Operations Research
+% Symbolic Computation 
+% Sound
+% Software Engineering 
+% Social and Information Networks 
+% Systems and Control 
+% Image Processing 
+% Signal and Image Processing 
+% Document and Text Processing
+% Web
+\domain{Domain: Cryptography and Security}
+
+%write your abstract here
+\abstract{write your abstract here}
+
+
+
+\begin{document}
+\maketitle
+
+%*****************************************************************%
+
+\section*{Introduction}
+
+Here start your document - Should be 15 pages long \\
+
+Following Kerchoffs' principle, the security of a cryptographic device shall not rely on the secrecy of its mechanisms \cite{Kerckhoffs_1883}.
+However in some specific contexts, having a secret implementation can add a layer of security, by increasing the practical difficulty of the attack.
+
+\section{State of the art of Side Channel Attacks on SPNs}
+
+\subsection{SPNs, Feistel schemes, DES and AES}
+
+Feistel scheme, DES
+
+\cite{Standards2001}
+
+\subsection{Side Channel Analysis classic attacks}
+
+SPA, DPA, CPA explanation (ref papers ?)
+
+\cite{Chari_Rao_Rohatgi_2003} presents template attacks, "the strongest form of side channel attack possible in an information theoretic sense".
+
+\cite{Prouff_Rivain_1970} presents the theory of Mutual Information Attacks (MIA) in side channels.
+
+Machine Learning is very popular right now.
+
+\section{SCARE attacks}
+
+\subsection{SCARE attacks on non AES ciphers}
+
+\cite{Novak_2003} presents a side-channel attack on substitution blocks with a demonstration on a SIM card using COMP-128 cipher.
+
+\cite{Daudigny_Ledig_Muller_Valette_2005} presents a SCARE attack on DES and propose new methods to exploit the power measurement information.
+
+\cite{Guilley_Sauvage_Micolod_Réal_Valette_2010} presents two SCARE attacks on the parameters of a LFSR and DES.
+
+\subsection{SCARE attacks on AES-like ciphers}
+
+\cite{Tiessen_Knudsen_Kölbl_Lauridsen_2015} presents an integral cryptanalysis of an AES with a secret S-box and less rounds. It is not a SCA but is still closely related to our subject.
+
+\cite{Rivain_Roche_2013} presents a generic SCARE attack against a wide class of SPN block ciphers.
+
+FIRE (injection fault attempts) and SCARE attacks to recover the full set of secret parameters of an AES-like software implementation, even with masking and shuffling \cite{Clavier_Isorez_Marion_Wurcker_2015}.
+
+\section{Application to hardware implementations}
+
+\cite{Réal_Dubois_Guilloux_Valette_Drissi_2008} presents a SCARE attack on a general Feistel scheme with an hardware design.
+
+SAKURA board reference
+
+SCA attacks on FPGAs (\cite{Peeters_Standaert_Donckers_Quisquater_2005} or more relevantly \cite{Standaert_Ors_Preneel_2004} or something more recent)
+
+\section{Conclusion}
+
+\section*{References}
+
+\printbibliography
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
