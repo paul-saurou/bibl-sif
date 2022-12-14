@@ -33,6 +33,10 @@ cd ..
 
 - [Peeters et al] E. Peeters, F.-X. Standaert, N. Donckers, et J.-J. Quisquater, Improved Higher-Order Side-Channel Attacks with FPGA Experiments, in Cryptographic Hardware and Embedded Systems – CHES 2005, 2005, p. 309‑323. doi: 10.1007/11545262_23.
 - [Standaert et al] F.-X. Standaert, B. Ors, et B. Preneel, Power Analysis of an FPGA: Implementation of Rijndael: Is Pipelining a DPA Countermeasure?, 2004, p. 30‑44. doi: 10.1007/b99451.
+- [Benadjila et al] R. Benadjila, E. Prouff, R. Strullu, E. Cagli, et C. Dumas, Deep learning for side-channel analysis and introduction to ASCAD database, J Cryptogr Eng, juin 2020, doi: 10.1007/s13389-019-00220-8.
+- [Cagli et al] E. Cagli, C. Dumas, et E. Prouff, Convolutional Neural Networks with Data Augmentation Against Jitter-Based Countermeasures: Profiling Attacks Without Pre-processing, in Cryptographic Hardware and Embedded Systems – CHES 2017, 2017, p. 45‑68. doi: 10.1007/978-3-319-66787-4_3.
+- [Zaid] G. Zaid, Bridging Deep Learning and Classical Profiled Side-Channel Attacks.
+- [Masure] L. Masure, Towards a better comprehension of deep learning for side-channel analysis.
 
 
 ### Papers to keep

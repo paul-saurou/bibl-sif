@@ -82,6 +82,7 @@ Une attaque SQUARE (similaire à celle là) est expliquée ici: https://www.davi
 Les concepts utilisés (notamment les propriétés sur les $\Delta$-sets) sont tirés de ce papier : Biryukov_Shamir
 
 ---
+---
 
 ## [Prouff and Rivain] Theoretical and Practical Aspects of Mutual Information Based Side Channel Analysis.
 - Prouff_Rivain_1970
@@ -112,6 +113,7 @@ This paper introduces a formal model to analyse parallel masked cryptographic im
 ### Commentaire
 Probablement trop théorique et pas assez axé sur l'attaque mais discute sur les liens entre les implémentations "software" en série et les implémentations "hardware" en parallèle.
 
+---
 ---
 
 ## [Roche and Lomné] Collision-correlation attack against some 1st-order boolean masking schemes in the context of secure devices.
@@ -152,3 +154,47 @@ This paper presents a reverse engineering of embedded software. It finds the ins
 
 ### Commentaire
 Assez hors sujet. Trouver des patterns est une idée intéressante mais on ne le fera pas comme ça et pas dans ce cas d'usage.
+
+---
+---
+
+## [Benadjila et al] Deep learning for side-channel analysis and introduction to ASCAD database
+- Benadjila_Prouff_Strullu_Cagli_Dumas_2020
+
+### Short summary
+This paper introduces a test dataset and benchmarks for AES side channel leakages. It compares multiple ML and DL algorithms and focus on the choice of the hyperparameter and the reproducibility of their work. The introduced database is ASCAD (ANSSI SCA Database). It also compares these attacks to template attacks and foucs on CNNs, the best performing models.
+
+### Commentaire
+La base de données est intéressante pour attaquer des clés. Les benchmarks sont complets. Hors sujet car ce n'est ni du hardware, ni du SCARE mais intéressant pour la partie ML.
+
+
+## [Cagli et al] Convolutional Neural Networks with Data Augmentation Against Jitter-Based Countermeasures: Profiling Attacks Without Pre-processing
+- Cagli_Dumas_Prouff_2017
+
+### Short summary
+This paper presents a template attack against a jitter-based countermeasure, except that instead of doing preprocessing and then the attack, it applies a CNN with data augmentation. It gives the result from the traces, even with clock jitter activated. CNNs perform as well as classic SoA template attacks and require less tuning, at the cost of more training data.
+
+### Commentaire
+Les CNNs sont à l'état de l'art pour retrouver des clés par SCA. Partout où il y a de la réduction de dimension et du réalignement manuel ils devraient fonctionner aussi bien que les techniques actuelles.
+
+
+## [Masure] Towards a better comprehension of deep learning for side-channel analysis
+- Masure
+
+### Short summary
+
+
+### Commentaire
+
+
+
+## [Zaid] Bridging Deep Learning and Classical Profiled Side-Channel Attacks
+- Zaid
+
+### Short summary
+
+
+### Commentaire
+
+
+

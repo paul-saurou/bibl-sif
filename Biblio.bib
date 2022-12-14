@@ -305,4 +305,46 @@
 	doi          = {10.1007/b99451},
 	abstractnote = {In the execution on a smart card, side channel attacks such as simple power analysis (SPA) and the differential power analysis (DPA) have become serious threat. Side channel attacks monitor power consumption and even exploit the leakage information related to power consumption to reveal bits of a secret key d although d is hidden inside a smart card. Almost public key cryptosystems including RSA, DLP-based cryptosystems, and elliptic curve cryptosystems execute an exponentiation algorithm with a secret-key exponent, and they thus suffer from both SPA and DPA. Recently, in the case of elliptic curve cryptosystems, DPA is improved to the Refined Power Analysis (RPA), which exploits a special point with a zero value and reveals a secret key. RPA is further generalized to Zero-value Point Attack (ZPA). Both RPA and ZPA utilizes a special feature of elliptic curves that happens to have a special point or a register used in addition and doubling formulae with a zero value and that the power consumption of 0 is distinguishable from that of an non-zero element. To make the matters worse, some previous efficient countermeasures are neither resistant against RPA nor ZPA. Although a countermeasure to RPA is proposed, this is not a universal countermeasure, gives each different method to each type of elliptic curves, and is still vulnerable against ZPA. The possible countermeasures are ES and the improved version. This paper focuses on countermeasures against RPA, ZPA, DPA and SPA. We show a novel countermeasure resistant against RPA, ZPA, SPA and DPA without any pre-computed table. We also generalize the countermeasure to present more efficient algorithm with a pre-computed table.}
 }
+@article{Benadjila_Prouff_Strullu_Cagli_Dumas_2020,
+	title        = {Deep learning for side-channel analysis and introduction to ASCAD database},
+	author       = {Benadjila, Ryad and Prouff, Emmanuel and Strullu, Rémi and Cagli, Eleonora and Dumas, Cécile},
+	year         = 2020,
+	month        = {Jun},
+	journal      = {Journal of Cryptographic Engineering},
+	volume       = 10,
+	number       = 2,
+	pages        = {163–188},
+	doi          = {10.1007/s13389-019-00220-8},
+	issn         = {2190-8516},
+	abstractnote = {Recent works have demonstrated that deep learning algorithms were efficient to conduct security evaluations of embedded systems and had many advantages compared to the other methods. Unfortunately, their hyper-parametrization has often been kept secret by the authors who only discussed on the main design principles and on the attack efficiencies in some specific contexts. This is clearly an important limitation of previous works since (1) the latter parametrization is known to be a challenging question in machine learning and (2) it does not allow for the reproducibility of the presented results and (3) it does not allow to draw general conclusions. This paper aims to address these limitations in several ways. First, completing recent works, we propose a study of deep learning algorithms when applied in the context of side-channel analysis and we discuss the links with the classical template attacks. Secondly, for the first time, we address the question of the choice of the hyper-parameters for the class convolutional neural networks. Several benchmarks and rationales are given in the context of the analysis of a challenging masked implementation of the AES algorithm. Interestingly, our work shows that the approach followed to design the algorithm VGG-16 used for image recognition seems also to be sound when it comes to fix an architecture for side-channel analysis. To enable perfect reproducibility of our tests, this work also introduces an open platform including all the sources of the target implementation together with the campaign of electromagnetic measurements exploited in our benchmarks. This open database, named ASCAD, is the first one in its category and it has been specified to serve as a common basis for further works on this subject.},
+	language     = {en}
+}
+@inbook{Cagli_Dumas_Prouff_2017,
+	title        = {Convolutional Neural Networks with Data Augmentation Against Jitter-Based Countermeasures: Profiling Attacks Without Pre-processing},
+	author       = {Cagli, Eleonora and Dumas, Cécile and Prouff, Emmanuel},
+	year         = 2017,
+	booktitle    = {Cryptographic Hardware and Embedded Systems – CHES 2017},
+	publisher    = {Springer International Publishing},
+	address      = {Cham},
+	series       = {Lecture Notes in Computer Science},
+	volume       = 10529,
+	pages        = {45–68},
+	doi          = {10.1007/978-3-319-66787-4_3},
+	isbn         = {978-3-319-66786-7},
+	url          = {http://link.springer.com/10.1007/978-3-319-66787-4_3},
+	abstractnote = {In the context of the security evaluation of cryptographic implementations, proﬁling attacks (aka Template Attacks) play a fundamental role. Nowadays the most popular Template Attack strategy consists in approximating the information leakages by Gaussian distributions. Nevertheless this approach suﬀers from the diﬃculty to deal with both the traces misalignment and the high dimensionality of the data. This forces the attacker to perform critical preprocessing phases, such as the selection of the points of interest and the realignment of measurements. Some software and hardware countermeasures have been conceived exactly to create such a misalignment. In this paper we propose an end-to-end proﬁling attack strategy based on the Convolutional Neural Networks: this strategy greatly facilitates the attack roadmap, since it does not require a previous trace realignment nor a precise selection of points of interest. To signiﬁcantly increase the performances of the CNN, we moreover propose to equip it with the data augmentation technique that is classical in other applications of Machine Learning. As a validation, we present several experiments against traces misaligned by diﬀerent kinds of countermeasures, including the augmentation of the clock jitter eﬀect in a secure hardware implementation over a modern chip. The excellent results achieved in these experiments prove that Convolutional Neural Networks approach combined with data augmentation gives a very eﬃcient alternative to the state-of-the-art proﬁling attacks.},
+	editor       = {Fischer, Wieland and Homma, Naofumi},
+	collection   = {Lecture Notes in Computer Science},
+	language     = {en}
+}
+@phdthesis{Masure,
+	title        = {Towards a better comprehension of deep learning for side-channel analysis},
+	author       = {Masure, Loïc},
+	language     = {fr}
+}
+@phdthesis{Zaid,
+	title        = {Bridging Deep Learning and Classical Profiled Side-Channel Attacks},
+	author       = {Zaid, Gabriel},
+	language     = {fr}
+}
 
