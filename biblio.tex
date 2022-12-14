@@ -1,6 +1,6 @@
 \documentclass[11pt]{sdm}
 \usepackage{graphicx}
-\usepackage[style=authoryear, backend=biber]{biblatex}
+\usepackage[style=alphabetic,sorting=nyt, backend=biber]{biblatex}
 \addbibresource{Biblio.bib}
 
 %numeroter les pages
@@ -130,6 +130,17 @@ Machine Learning is very popular right now.
 FIRE (injection fault attempts) and SCARE attacks to recover the full set of secret parameters of an AES-like software implementation, even with masking and shuffling \cite{Clavier_Isorez_Marion_Wurcker_2015}.
 
 \section{Application to hardware implementations}
+
+\subsection{Differences between software and hardware cryptographic implementations}
+
+\begin{itemize}
+    \item The sequential execution becomes parallel
+    \item There is even more noise
+    \item SCA leaks cannot be determined as precisely
+    \item It takes more time to implement, develop and attack
+\end{itemize}
+
+\subsection{Attacks on hardware design}
 
 \cite{Réal_Dubois_Guilloux_Valette_Drissi_2008} presents a SCARE attack on a general Feistel scheme with an hardware design.
 
