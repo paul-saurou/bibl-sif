@@ -37,7 +37,7 @@ cd ..
 - [Cagli et al] E. Cagli, C. Dumas, et E. Prouff, Convolutional Neural Networks with Data Augmentation Against Jitter-Based Countermeasures: Profiling Attacks Without Pre-processing, in Cryptographic Hardware and Embedded Systems – CHES 2017, 2017, p. 45‑68. doi: 10.1007/978-3-319-66787-4_3.
 - [Zaid] G. Zaid, Bridging Deep Learning and Classical Profiled Side-Channel Attacks.
 - [Masure] L. Masure, Towards a better comprehension of deep learning for side-channel analysis.
-
+- [Maghrebi et al] H. Maghrebi, T. Portigliatti, et E. Prouff, Breaking Cryptographic Implementations Using Deep Learning Techniques, in Security, Privacy, and Applied Cryptography Engineering, vol. 10076, 2016, p. 3‑26. doi: 10.1007/978-3-319-49445-6_1.
 
 ### Papers to keep
 - [Kerckhoffs] Kerckhoﬀs, A.: La cryptographie militaire (1). Journal des sciences militaires 9, 5–38 (1883)

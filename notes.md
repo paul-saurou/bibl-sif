@@ -85,7 +85,7 @@ Les concepts utilisés (notamment les propriétés sur les $\Delta$-sets) sont t
 ---
 
 ## [Prouff and Rivain] Theoretical and Practical Aspects of Mutual Information Based Side Channel Analysis.
-- Prouff_Rivain_1970
+- Prouff_Rivain_2009
 
 ### Short summary
 This paper presents the theory of Mutual Information Attacks (MIA) in side channels. It is an attack based on entropy and mutual information between the leakage and the predicted data. It does not require any prealable knowledge of the studied device and can be applied in any context. When in the Hamming weight model, it performs worse than CPA on a DES implementation but could retrieve the key in a context where CPA gives no result due to a different leakage.
@@ -197,4 +197,11 @@ Les CNNs sont à l'état de l'art pour retrouver des clés par SCA. Partout où 
 ### Commentaire
 
 
+## [Maghrebi et al] Breaking Cryptographic Implementations Using Deep Learning Techniques
+- Maghrebi_Portigliatti_Prouff_2016
+
+### Short summary
+
+
+### Commentaire
 
