@@ -324,15 +324,61 @@ The following section is about Side Channel Analysis Reverse Engineering (SCARE)
 
 % Machine Learning is very popular right now. Thesis of \parencite{Masure}
 
-\section{SCARE attacks}
+\section{Side-Channel Analysis for Reverse Engineering}
 
-
+Side-Channel Analysis for Reverse Engineering (SCARE) uses side-channel information to reverse-engineer the secret parts of a cryptographic implementation.
+It applies the techniques of SCA to recover implementations details among:
+\begin{itemize}
+    \item Secret constants such as the substitution blocks of a SPN \parencite{Novak_2003}.
+    \item Algorithm structure such as the number of rounds, the size of the S-boxes used, ...
+    \item Which technologies and methods are used by the developer of the products.
+\end{itemize}
 
 \subsection{SCARE attacks on non AES ciphers}
 
-\parencite{Novak_2003} presents a side-channel attack on substitution blocks with a demonstration on a SIM card using COMP-128 cipher.
+The first SCARE attack was proposed by Novak in 2003 to retrieve the secret authentication and session key generation algorithm of the GSM standard \parencite{Novak_2003}.
 
-\parencite{Daudigny_Ledig_Muller_Valette_2005} presents a SCARE attack on DES and propose new methods to exploit the power measurement information.
+The COMP128-2 algorithm used in SIM cards is kept secret despite Kerckhoffs' principle.
+Knowing the architecture, the computations involved and the secret key, Novak retrieves the contents of substitution blocks implemented as lookup tables by analyzing the power consumption of the cipher.
+
+The idea behind the attack is to use \textbf{collision analysis} because different values of a parameter can give the same intermediate result.
+Identifying equal intermediate results allows an attacker to restore the content of the lookup table and thus break the substitution block.
+
+To do that, it uses the means of measurements for all the possible values of a given input byte as an identifier.
+The equality between the leakages provides a set of equation at each round of the cipher.
+Combining these sets of equation allows to solve them and recover the lookup table content.
+
+This attack is based on the assumption that two lookups to the same value gives very similar leakages.
+It relies a lot on the quality of the leakages to identify identical lookups.
+Because of that, \textbf{table masking} is an effective countermeasure.
+It consists in decorrelating the intermediate results from the secret values.
+To do that, a different random value is used each round and the operations are modified so that the final result does not depend on the random value anymore.
+Implementing masking effectively is very specific to each architecture and each attacker model.
+The most common masking strategies are boolean (xor $\bigoplus$) and arithmetic (+ mod $2^n$). % TODO: choose a reference for masking
+
+\smallbreak
+Another SCARE method relies on \textbf{classical correlation analysis}.
+\parencite{Daudigny_Ledig_Muller_Valette_2005} uses it is to extract scheduling information from the power consumption to recover a good deal of information from a software implementation of DES.
+
+The authors assume that the structure and the constants are unknown.
+Strong assumptions on the quality of the power leakages allow the attacker to extract scheduling information for each bit at the clock cycle level.
+It means that the attacker knows exactly when each bit is manipulated.
+Identifying patterns in power consumption and scheduling information allow to recover the general structure of DES: number of rounds, use of xor operation and table lookups.
+Groups of bits manipulated together correspond to S-box inputs.
+Removing the noise and observing the scheduling information of the first round input of DES allows to recover the content of the DES expansion table line by line.
+The same thing can be done for the following S-box layer and the permutation table.
+The key scheduling algorithm can also be found using the same technique.
+
+The scheduling information can then be used to isolate traces corresponding to each S-box and perform another SCA attack to recover the key.
+
+\smallbreak
+\parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010} also uses \textbf{CPA} techniques for reverse engineering, but under much weaker assumptions.
+The attacks presented in the paper work in the known plaintext or ciphertext attacker model.
+It retrieves the S-boxes of a modified DES using custom S-boxes by using brute force.
+
+%\parencite{Novak_2003} presents a side-channel attack on substitution blocks with a demonstration on a SIM card using COMP-128 cipher.
+
+%\parencite{Daudigny_Ledig_Muller_Valette_2005} presents a SCARE attack on DES and propose new methods to exploit the power measurement information.
 
 \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010} presents two SCARE attacks on the parameters of a LFSR and DES.
 
