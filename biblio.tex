@@ -281,12 +281,15 @@ SPA can yield information about a device's operation as well as key material.
 
 \textbf{Differential Power Analysis} (DPA) involves statistical tools to study multiple power consumption leakages from a cryptographic module.
 It aims to remove noise by using signal processing and error corrections techniques.
+It makes the assumption that the power consumption of a given operation follows a normal distribution at a given timestamp. 
 
-% TODO: Maybe write a few words about CPA (or not)
+\textbf{Correlation Power Analysis} (CPA) is similar to DPA but makes further assumptions.
+It supposes a power consumption model, most often the Hamming weight model or the Hamming distance model.
+It then tries to correlate the modeled power consumption with the real consumption using the Pearson correlation coefficient. % TODO: Maybe explain what the PCC is (or not)
 
-\textbf{Template attacks} (or profiling attacks) creates a profile of the attacked device with many generated traces and uses it to later find the secret of the victim with a very small number of traces.
+\textbf{Template attacks} (or profiling attacks) create a profile of the attacked device with many generated traces and uses it to later find the secret of the victim with a very small number of traces.
 
-First described in \parencite{Chari_Rao_Rohatgi_2003}, it uses a copy of the protected device to record numerous power traces using many plaintexts and keys.
+First described in 2003, it uses a copy of the protected device to record numerous power traces using many plaintexts and keys \parencite{Chari_Rao_Rohatgi_2003}.
 The noise is modeled using multivariate Gaussian distributions, one for each possible subkey.
 If a subkey is a byte, then the attack would need 256 different templates.
 The samples are used to identify the $n$ points where the differences between averaged signals are the largest.
@@ -357,14 +360,14 @@ Implementing masking effectively is very specific to each architecture and each 
 The most common masking strategies are boolean (xor $\bigoplus$) and arithmetic (+ mod $2^n$). % TODO: choose a reference for masking
 
 \smallbreak
-Another SCARE method relies on \textbf{classical correlation analysis}.
-\parencite{Daudigny_Ledig_Muller_Valette_2005} uses it is to extract scheduling information from the power consumption to recover a good deal of information from a software implementation of DES.
-
-The authors assume that the structure and the constants are unknown.
-Strong assumptions on the quality of the power leakages allow the attacker to extract scheduling information for each bit at the clock cycle level.
+Another SCARE method relies on \textbf{correlation power analysis}.
+An example of such attack is the reverse engineering of DES, in which the authors assume that the structure and the constants are unknown \parencite{Daudigny_Ledig_Muller_Valette_2005}.
+Strong assumptions on the quality of the power leakages allow the attacker to extract scheduling information for each bit at the clock cycle level using CPA.
 It means that the attacker knows exactly when each bit is manipulated.
-Identifying patterns in power consumption and scheduling information allow to recover the general structure of DES: number of rounds, use of xor operation and table lookups.
-Groups of bits manipulated together correspond to S-box inputs.
+This scheduling information from the power consumption allows the attacker to recover a good deal of information from the software implementation of DES.
+
+Identifying patterns in power consumption and scheduling information allow to recover the general structure of the cipher: number of rounds, use of xor operation and table lookups.
+For example, groups of bits manipulated together often correspond to S-box inputs.
 Removing the noise and observing the scheduling information of the first round input of DES allows to recover the content of the DES expansion table line by line.
 The same thing can be done for the following S-box layer and the permutation table.
 The key scheduling algorithm can also be found using the same technique.
@@ -372,21 +375,49 @@ The key scheduling algorithm can also be found using the same technique.
 The scheduling information can then be used to isolate traces corresponding to each S-box and perform another SCA attack to recover the key.
 
 \smallbreak
-\parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010} also uses \textbf{CPA} techniques for reverse engineering, but under much weaker assumptions.
-The attacks presented in the paper work in the known plaintext or ciphertext attacker model.
+\textbf{CPA} techniques for reverse engineering can also be used under much weaker assumptions.
+The attacks presented in the paper work in the known plaintext or ciphertext attacker model \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010}.
 It retrieves the S-boxes of a modified DES using custom S-boxes by using brute force.
+To attack $i$ input bits of a S-box, the attacker only considers a set of traces that keep 6-i bits of the target S-box to a constant value (which is possible since the plaintext is known).
+A correlation program can then map these traces to the corresponding function, a subpart of the S-box.
+To recover one S-box of DES, 960 CPAs are necessary using this method on 2 input bits at a time.
+
 
 %\parencite{Novak_2003} presents a side-channel attack on substitution blocks with a demonstration on a SIM card using COMP-128 cipher.
 
 %\parencite{Daudigny_Ledig_Muller_Valette_2005} presents a SCARE attack on DES and propose new methods to exploit the power measurement information.
 
-\parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010} presents two SCARE attacks on the parameters of a LFSR and DES.
+%\parencite{Guilley_Sauvage_Micolod_Réal_Valette_20DES10} presents two SCARE attacks on the parameters of a LFSR and DES.
 
 \subsection{SCARE attacks on AES-like ciphers}
 
-\parencite{Tiessen_Knudsen_Kölbl_Lauridsen_2015} presents an integral cryptanalysis of an AES with a secret S-box and less rounds. It is not a SCA but is still closely related to our subject.
+The Advanced Encryption Standard is a publicly-known and clearly defined architecture. 
+However, its parameter values can be changed to obtain a new cipher, that is not AES but has the same structure.
+Following Kerckhoffs' principle, this new cipher may not be safer than a classic implementation of AES.
+The following examples show how the secret parameters can be recovered using SCARE.
 
-\parencite{Rivain_Roche_2013} presents a generic SCARE attack against a wide class of SPN block ciphers.
+This SCARE method is designed for all SPN structures, including modified AES ciphers \parencite{Rivain_Roche_2013}.
+It considers that the attacker can select parts of the side-channel traces where the s-box computations are located.
+The attacker must be able to decide on collisions between the processed values from the observation of these traces.
+For that, any SCA method can be used.
+The attacker also knows the plaintext. If the plaintext is chosen, the complexity of the attack is lowered.
+
+Then the attack consists in building simple linear equations systems to recover the S-box values, the linear layer coefficients and the secret round keys.
+It retrieves the first round key by fixing its first bit and then identifying the collisions between the already known bits and the remaining bits.
+Knowing the first secret round key, the collisions happening before and after the 2nd round allow to build a system of linear equations involving the linear layer, the S-box and the second secret round key.
+Given enough traces, the system can be solved.
+Then, only the remaining round keys are left to be discovered.
+It can be done using the same method as for the first one.
+
+This attack is very generic and can be applied to all SPNs schemes.
+It also works if the leakage is noisy or on masked implementations.
+
+According to the authors, a sufficient countermeasure is to combine masking and operation shuffling.
+Non-sequential execution is also outside the scope of the attack and make it inefficient.
+
+\parencite{Tiessen_Knudsen_Kölbl_Lauridsen_2015} presents an integral cryptanalysis of an AES with a secret S-box and fewer rounds. It is not a SCA but is still closely related to our subject.
+
+%\parencite{Rivain_Roche_2013} presents a generic SCARE attack against a wide class of SPN block ciphers.
 
 FIRE (injection fault attempts) and SCARE attacks to recover the full set of secret parameters of an AES-like software implementation, even with masking and shuffling \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
 
