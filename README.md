@@ -53,6 +53,8 @@ Secret Cryptography with SCARE Attacks. In LATINCRYPT ’10, volume 6212, pages 
 - [Réal, Dubois et al] Denis Réal, Vivien Dubois, Anne-Marie Guilloux, Frédéric Valette, and Mhamed Drissi. SCARE of an Unknown Hardware Feistel Implementation. In Gilles Grimaud and François-Xavier Standaert, editors, CARDIS ’08, pages 218–227. Springer Berlin Heidelberg, 2008.
 - [Chari et al] S. Chari, J.R. Rao, and P. Rohatgi. Template Attacks. In Burton S. Kaliski Jr., Cryptographic Hardware and Embedded Systems, 4th International Workshop – CHES 2002, volume 2523 of Lecture Notes in Computer Science, pages 13–29. Springer, 2002.
 - [Tiessen et al] Tiessen, Tyge, et al. « Security of the AES with a Secret S-Box ». Fast Software Encryption, édité par Gregor Leander, vol. 9054, Springer Berlin Heidelberg, 2015, p. 175‑89. DOI.org (Crossref), https://doi.org/10.1007/978-3-662-48116-5_9.
+- [Clavier, Danger et al.] C. Clavier et al., Practical improvements of side-channel attacks on AES: feedback from the 2nd DPA contest, J Cryptogr Eng, vol. 4, nᵒ 4, p. 259‑274, nov. 2014, doi: 10.1007/s13389-014-0075-9.
+
 
 ### Papers that may be relevant
 - [Barthe et al] Barthe, G., Dupressoir, F., Faust, S., Grégoire, B., Standaert, FX., Strub, PY. (2017). Parallel Implementations of Masking Schemes and the Bounded Moment Leakage Model. In: Coron, JS., Nielsen, J. (eds) Advances in Cryptology – EUROCRYPT 2017. EUROCRYPT 2017. Lecture Notes in Computer Science(), vol 10210. Springer, Cham. https://doi.org/10.1007/978-3-319-56620-7_19

@@ -81,6 +81,15 @@ Ce ne sont pas des side-channels mais c'est le système qu'on veut casser. Très
 Une attaque SQUARE (similaire à celle là) est expliquée ici: https://www.davidwong.fr/blockbreakers/square.html.
 Les concepts utilisés (notamment les propriétés sur les $\Delta$-sets) sont tirés de ce papier : Biryukov_Shamir
 
+## [Clavier, Danger et al.] C. Clavier et al., Practical improvements of side-channel attacks on AES: feedback from the 2nd DPA contest
+- Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014
+
+### Short summary
+This article presents the second edition of the DPA contest and its results. This challenge targeted a FPGA based implementation of AES and provided common references sets of power consumption traces and a methodology to compare different approaches.
+
+### Commentaire
+L'article donne les enjeux du DPA contest et présente très succinctement les différentes contributions des auteurs.
+
 ---
 ---
 

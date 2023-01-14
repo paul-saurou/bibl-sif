@@ -195,7 +195,8 @@ In some SPN implementations, the final round sometimes skips the linear layer an
 
 The S-boxes $(S_i)_{1\leq i \leq l}$ can be chosen identical. 
 All the S-boxes do not have the same cryptographic properties.
-One is considered secure if changing one input bit changes almost half of the output bits on average. % TODO: Citation
+One is considered secure if it exhibits the avalanche effect, meaning that changing a small change in the input changes the output greatly.
+For example, one input bit should change almost half of the output bits on average.
 % TODO: Decryption
 
 \begin{center}
@@ -225,6 +226,7 @@ $\begin{psmallmatrix}
 \end{psmallmatrix}$
 The round keys are derived using the AES key schedule.
 All the 16 S-boxes are the same, and their design is chosen to have no fixed points.
+The substitution operation is often referred as SubBytes operation.
 The linear layer is divided into a ShiftRows and a MixColumns operation.
 The ShiftRows step cyclically shifts the bytes in each row by a certain offset (from 0 to 3):
 $\begin{psmallmatrix}
@@ -276,7 +278,7 @@ The \textbf{Hamming Weight} of $a \in \mathbb{F}_2^n$ is $H(a) = \sum_{i=0}^{n-1
 It counts the number of bits set to 1 when storing the variable a.
 It is the most widely used leakage model.
 
-\textbf{Single power analysis} (SPA) involves directly interpreting power consumption measurements collected during cryptographic operations. % TODO: cite Differential Power Analysis by Paul Kocher
+\textbf{Single power analysis} (SPA) involves directly interpreting power consumption measurements collected during cryptographic operations \parencite{Kocher_Jaffe_Jun_1999}.
 SPA can yield information about a device's operation as well as key material.
 
 \textbf{Differential Power Analysis} (DPA) involves statistical tools to study multiple power consumption leakages from a cryptographic module.
@@ -415,11 +417,59 @@ It also works if the leakage is noisy or on masked implementations.
 According to the authors, a sufficient countermeasure is to combine masking and operation shuffling.
 Non-sequential execution is also outside the scope of the attack and make it inefficient.
 
-\parencite{Tiessen_Knudsen_Kölbl_Lauridsen_2015} presents an integral cryptanalysis of an AES with a secret S-box and fewer rounds. It is not a SCA but is still closely related to our subject.
+\smallbreak
+This very general attack on SPNs has been refined for AES in 2015 under more restrictive assumptions \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
+The work is divided in two parts.
+
+The first one does a SCARE of the AES under a very similar same model than Rivain and Roche \parencite{Rivain_Roche_2013}.
+It still considers that the attacker can identify collisions between two different S-Box computations.
+However, this method only applies to AES with secret parameters and can deal with masking and operation shuffling.
+In particular, the S-box is the same for each round and the key derivation algorithm is the one from AES with secret constants.
+
+The second part does a SCARE of the AES assuming that the attacker can identify collisions of Hamming weights of inputs/outputs of different S-box computations.
+This model is weaker but more realistic.
+It can resist at least to simple masking.
+
+\smallbreak
+To address the masking countermeasure, Clavier et al. only use intra-traces setting, meaning that the attacker is able to detect collisions between two S-Box only in a same execution \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
+Indeed, they assume that an 8-bit Boolean masking only refreshes the randomization of S-boxes at each execution because of time and memory constraints.
+Then collisions that happen during one execution can be detected.
+Masking on other operations do not affect the attack.
+
+The shuffling countermeasure is more complex to evade.
+It shuffles the 16 bytes S-box computations at each round, causing the collisions' observation to no longer give information about the index of the input bytes.
+The remaining information is the number of different S-Box inputs at each round, and their number of occurrences.
+To retrieve the first round key, it finds a plaintext such that the first round SubBytes operation only presents one colliding value occurring more than once.
+By modifying each one of the 16 bytes of the plaintext and picking the indexes for which the multiplicity of the colliding value is reduced, the attacker can infer relations between the key bytes.
+The process can be repeated with new plaintexts until enough relations are obtained, and the first round key can be determined (up to a xor with a constant).
+
+The same can be done for the last round key.
+
+To recover the S-box, the same concept is used.
+Collisions between the first S-box and the last S-box computations are identified and can give information about a group of byte indexes by repeating the input bytes a different number of times for each value in a chosen plaintext.
+Each collision gives information about the byte values and repeating the operation for multiple plaintexts eventually gives enough information to retrieve the S-box content.
+
+Since the first and last round keys are known, the key scheduling algorithm can be found through exhaustive search.
+
+To recover the ShiftRows and MixColumns parameters, the attacker can craft plaintexts by only changing one byte to obtain a small subset of possible values for MixColumns columns and ShiftRows parameters.
+Different byte values provide new sets of possible values and their intersection reveals the secret parameters.
+
+\smallbreak
+To perform a SCARE attack on a modified AES under the Hamming weight model, Clavier et al. introduce and reason on special sets.
+They are constituted of the inputs (respectively the outputs) that have a given Hamming weight and whose S-box output (respectively input) has another given Hamming weight that will collide under the Hamming weight collisions model.
+The attack first retrieves the first and last round keys and the ShiftRow parameters, then builds the special sets by analyzing collisions and non-collisions between chosen plaintexts, and reasons on their cardinal.
+The special sets allow to reduce the number of potential candidates for each byte value during the MixColumns and S-box retrieval stages.
+If a set has a cardinal of 1, then it identifies one unique value.
+
+This attack is very efficient and can recover the parameters of an AES using approximately 250 traces, whereas 400 (respectively 4000) are needed under the unprotected (respectively protected by a first-order Boolean masking and a random shuffling of operations) collision value model.
+
+
+% Est-ce vraimentpertinent de parler d'une cryptanalyse dans un rapport sur les SCA ?
+%\parencite{Tiessen_Knudsen_Kölbl_Lauridsen_2015} presents an integral cryptanalysis of an AES with a secret S-box and fewer rounds. It is not a SCA but is still closely related to our subject.
 
 %\parencite{Rivain_Roche_2013} presents a generic SCARE attack against a wide class of SPN block ciphers.
 
-FIRE (injection fault attempts) and SCARE attacks to recover the full set of secret parameters of an AES-like software implementation, even with masking and shuffling \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
+%FIRE (injection fault attempts) and SCARE attacks to recover the full set of secret parameters of an AES-like software implementation, even with masking and shuffling \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
 
 \section{Application to hardware implementations}
 
@@ -431,6 +481,8 @@ FIRE (injection fault attempts) and SCARE attacks to recover the full set of sec
     \item SCA leaks cannot be determined as precisely
     \item It takes more time to implement, develop and attack
 \end{itemize}
+
+\parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014} presents the result of the DPA contest.
 
 \subsection{Attacks on hardware design}
 
