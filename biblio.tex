@@ -340,6 +340,7 @@ It applies the techniques of SCA to recover implementations details among:
 \end{itemize}
 
 \subsection{SCARE attacks on non AES ciphers}
+\label{scare_non_aes}
 
 The first SCARE attack was proposed by Novak in 2003 to retrieve the secret authentication and session key generation algorithm of the GSM standard \parencite{Novak_2003}.
 
@@ -475,14 +476,38 @@ This attack is very efficient and can recover the parameters of an AES using app
 
 \subsection{Differences between software and hardware cryptographic implementations}
 
-\begin{itemize}
-    \item The sequential execution becomes parallel
-    \item There is even more noise
-    \item SCA leaks cannot be determined as precisely
-    \item It takes more time to implement, develop and attack
-\end{itemize}
+Software implementations are exposed to illegitimate access to their machine code through memory dumping.
+This can often be done without damaging the component.
+Because of that, it is more secure to implement the cryptographic algorithm into a specific device.
+It allows for better performances and better security through isolation of the component.
 
-\parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014} presents the result of the DPA contest.
+Also, implementing cryptography in hardware modules makes it more difficult to use SCA techniques.
+Indeed, many SCA attacks assume that the execution is sequential, whereas cryptographic modules implemented on an ASIC or an FPGA use parallelization whenever it is possible.
+Parallelizing the S-box lookups makes it impossible to get clean and separated power consumption traces.
+
+Then, hardware cryptographic implementations leakages are noisier, due to the physical setup and can use other countermeasures, such as desynchronized execution.
+So attacks on hardware devices cannot recover as much information as attacks on software algorithms.
+For example, the precise scheduling information recovered in the attack presented in \ref{scare_non_aes} is unrealistic on a hardware target \parencite{Daudigny_Ledig_Muller_Valette_2005}.
+
+
+Due to the higher cost of developing, evaluating and attacking hardware cryptographic implementations, and the lack of reproducibility of the studies due to different experimental setups (acquisition platform sensitivity, cryptographic algorithm implementation, board's noise), the literature on the subject is scarcer.
+
+To address the lack of uniformized benchmark, the DPA Contest v2 proposed in 2010 a common framework for multiple team to compare their attacks \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014}.
+The target is an FPGA implementation of an AES-128, and it considers known-message and profiled attacks.
+The acquisition board and its setup are precisely defined, and many metrics are used to evaluate the attacks: partial success rate, partial guessing entropy, global success rate, execution time and memory footprint.
+
+The results of the contest emphasize many differences between software side channel analysis and hardware side channel analysis.
+An example is the higher inaccuracy of the models such as the Hamming distance model used to approximate the traces.
+This inaccuracy makes classical attacks adaptation more difficult but also allows new opportunities of improve them.
+
+% \begin{itemize}
+%     \item The sequential execution becomes parallel
+%     \item There is even more noise
+%     \item SCA leaks cannot be determined as precisely
+%     \item It takes more time to implement, develop and attack
+% \end{itemize}
+
+% \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014} presents the result of the DPA contest.
 
 \subsection{Attacks on hardware design}
 
