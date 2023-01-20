@@ -511,7 +511,34 @@ This inaccuracy makes classical attacks adaptation more difficult but also allow
 
 \subsection{Attacks on hardware design}
 
-\parencite{Réal_Dubois_Guilloux_Valette_Drissi_2008} presents a SCARE attack on a general Feistel scheme with an hardware design.
+The SCARE attacks on hardware design mostly focus Feistel networks.
+
+An attack targeting a general Feistel design was presented in 2008 \parencite{Réal_Dubois_Guilloux_Valette_Drissi_2008}.
+The experiments of this attack use electromagnetic radiations instead of the power consumption as side channel leakage.
+Measuring electromagnetic radiations allows to detect the register state changes as in the power consumption model.
+With more experimental difficulties, the electromagnetic probes can observe the current at the register level.
+
+The attacker model of this reverse engineering is a chosen plaintext scenario and the attacker can only measure the global system leakages.
+
+To identify a Feistel scheme, a CPA mean on the left part of the plaintext contains one peak and on the right part it contains two peaks.
+Indeed, the right part of the plaintext is used in both the first and second rounds, whereas the left one is only used once.
+The number of rounds of a ciphering operation can be identified by analyzing the peaks in the electromagnetic radiation.
+
+To guess the Feistel function, the attacker fixes the right part of the plaintext and modifies its left part.
+It recovers the output of the Feistel function 4 bits by 4 bits by doing a CPA on the first round of the Feistel network.
+For each 4-bits input word, the CPA gives away the output of the Feistel function.
+The attacker can use the same technique to recover the rest of the Feistel function.
+If the level of noise is sufficiently low, the attacker can even do it bit by bit instead of four bits by four bits.
+
+To recover the whole Feistel function in the general case, it is considered as a vectorial function made of polynomials of the inputs bits and of degree $d$.
+If $n$ is the size of the input/output, there are around $n^d/d!$ coefficients for each one of the $n$ polynomials and as many SCA to perform.
+However, commonly used schemes are more restrictive and thus reduce the number of possibilities to account for.
+
+The proposed optimization considers a Feistel function built by concatenating a random function and a linear compression that reduces the number of bits.
+This strong assumption reduces the number of input/output pairs needed to reverse engineer the Feistel function to $2^d + (n-d)d$, where the linear compression is from $n$ bits to $d$ bits.
+The improvement makes the attack much more feasible in practice. 
+
+%\parencite{Réal_Dubois_Guilloux_Valette_Drissi_2008} presents a SCARE attack on a general Feistel scheme with an hardware design.
 
 SAKURA board reference
 
