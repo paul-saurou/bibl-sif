@@ -118,24 +118,24 @@ However, in some specific contexts, having a secret implementation can add a lay
 
 In this section, we formally define substitution–permutation network ciphers.
 Then, we introduce some of the most classical and standardized implementations.
-Finally, we present several Side Channel Analysis classic attacks on these implementations.
+Finally, we present several Side Channel Analysis state-of-the-art attacks on these implementations.
 
-\subsection{SPNs, Feistel schemes, DES and AES}
 
-Symmetric cryptography refers to the protection of a communication between a sender and a receiver who share the same secret key.
-An algorithm that derives from symmetric cryptography is called a symmetric algorithm.
-Symmetric algorithms mostly rely on either substitution ciphers, stream ciphers or block ciphers.
+Symmetric cryptography refers to the confidentiality protection of a communication between a sender and a receiver who share the same secret key.
+Symmetric ciphers historically relied on legacy substitution ciphers but since the end of WW2, stream and block ciphers are the norm.
 
 \textbf{Substitution ciphers} replace the units of plaintext by ciphertext in a defined manner, with the help of a key.
 Those are well known in history but can nowadays be easily decrypted using a frequency table or a similar mechanism.
 
-\textbf{Stream ciphers} encrypt the characters (in the form of bytes) of a message one at a time.
+\textbf{Stream ciphers} combine plaintext digits with a pseudo-random cipher digit stream called a keystream.
 
 \textbf{Block ciphers} encrypt fixed-length blocks of plaintext.
+Different modes of operation describe how to apply a block cipher to data larger than a block.
+Block ciphers are the most widely used type of cipher.
 
 This internship will focus on block ciphers, and especially on substitution–permutation networks.
 
-\subsubsection{Block ciphers}
+\subsection{Block ciphers}
 
 A block cipher consists of both an encryption function $E$ and a decryption function $D=E^{-1}$.
 They both accept two inputs: a block of text of fixed size $n$ and a key of size $k$.
@@ -143,34 +143,39 @@ They output a block of size $n$.
 
 The difference between different block ciphers is the definition of the function $E$ (and $D$).
 
-Most block ciphers are iterated, which means that $E$ consists in the repetition of a round function $R$ taking a different round key $K_i$ each round $i$ and the output of the previous round as the new input.
-If $M_0$ is the plaintext and there are $r$ rounds, then $ \forall i \in [ 1,r ] , M_i = R(M_{i-1},K_i) $ and $M_r = E(M_0)$ is the ciphertext.
-$R(M,K_i)$ is generally written $R_{K_i}(M)$.
+Most block ciphers are iterated, which means that $E$ consists in the repetition of round functions $R_i$, where $i$ is the index of the round.
+The inputs of $R_i$ are a round key $K_i$ and the intermediate value $V_{i-1}$.
+$V_i$ is the output of the previous round function.
+If $M=V_0$ is the plaintext and there are $r$ rounds, then $ \forall i \in [ 1,r ] , V_i = R_i(V_{i-1},K_i) $ and $V_r = E(V_0) = E(M)$ is the ciphertext.
+$R_i(V_{i-1},K_i)$ is generally written $R_{K_i}(V_{i-1})$.
 
-Choosing the number of rounds of an iterated block cipher scheme is a compromise between computing efficiency, cryptographic security and side channels leakages.
-Too few rounds allow for cryptographic attacks and too many rounds make the cipher inefficient and more difficult to implement securely.
+In most cipher designs, the round functions are chosen identical, except for the first and the last one.
+Beginning or ending the cipher with easily reversible operations that do not depend on the key is useless so the first and last rounds are often simpler than the other rounds.
+
+Choosing the number of rounds of an iterated block cipher scheme is a compromise between computing efficiency and cryptographic security.
+Too few rounds allow for cryptographic attacks and too many rounds make the cipher less efficient.
 
 We will now define two types of iterated block ciphers: Feistel networks and substitution–permutation networks.
 
 \subsubsection{Feistel ciphers}
 
 In a Feistel scheme, the plaintext block is divided in two parts $(p,q)$ of equal length $n/2$.
-With the previous notations, the round function is $R: (p,q) \mapsto (q,p \bigoplus f(q,K_i))$ where $f$ is called the Feistel function.
+The same round function $R$ is used for all rounds.
+With the previous notations, it is $R: (p,q, K_i) \mapsto (q,p \bigoplus f(q,K_i))$ where $f$ is called the Feistel function.
 Both the security and the performance of the Feistel network depend on the Feistel function $f$.
 A specificity of Feistel schemes is that $f$ does not need to be invertible.
 The decryption is almost identical to the encryption, the only difference being the reversal of the round keys order.
 
 % TODO: add image
 
-\subsubsection{DES}
 
-The Data Encryption Standard (DES) is a Feistel network scheme that has been highly influential in the advancement of cryptography.
+\textbf{The Data Encryption Standard (DES)} is a Feistel network scheme that has been highly influential in the advancement of cryptography.
 It is unsecure due to its too short 56-bit key size which make it vulnerable to brute-force attacks.
 For historical reasons this design still is interesting.
 It consists in a 16 round Feistel network and operates on blocks of 64 bits.
 The Feistel function of DES is shown on %TODO: figure
 
-First the 32-bit half-block is expanded to 48 bits using the $E$ expansion permutation function.
+First the 32-bit half-block is expanded to 48 bits using an expansion permutation function.
 Then the 48-bit block is xored with the round subkey and goes through a substitution layer.
 It is divided into eight 6-bit words which are replaced by 4-bit words using a lookup table.
 Finally, the 32 outputs are mixed according to a fixed permutation, the P-box.
@@ -178,25 +183,26 @@ Finally, the 32 outputs are mixed according to a fixed permutation, the P-box.
 
 \subsubsection{SPN ciphers}
 
-In substitution–permutation networks (SPN), the round function consists of a substitution stage followed by a permutation stage.
-It splits the plaintext $M$ of size $n$ into $l$ blocks $m_1,m_2,...,m_l$ of equal length.
-The substitution stage is non-linear and mixes the round key with the plaintext.
-It uses a set of substitution-boxes (S-boxes) that do one-to-one substitution to be reversible.
+In substitution–permutation networks (SPN), the round function consists of a xor with the round key, followed by a substitution stage and a permutation stage.
+The intermediate state $V$ of size $n$ is xored with the round key and the result $V'$ is split into $l$ blocks $v'_1,v'_2,...,v'_l$ of equal length.
+During the substitution stage, the intermediate state is mixed in some non-linear way.
+It is based on a set of substitution-boxes (S-boxes) that substitute small block of bits (the input of the S-box) by another block of bits (the output of the S-box).
+For the SPN to be reversible, the S-boxes have to be bijective.
 The permutation stage rearranges all the bits of the output of the S-boxes each round, as shown on Figure \ref{fig_spn}.
 
 More formally and with the previous notations, the round function is $R_{K_i} = \lambda \circ \gamma \circ \sigma_{K_i}$ with
 \begin{itemize}
-    \item $\sigma_{K}:M \mapsto M \bigoplus K$ the key addition layer,
-    \item $\gamma : M=(m_1,m_2,...,m_l) \mapsto S_1(m_1),S_2(m_2),...,S_l(m_l)$ the substitution layer, where $(S_i)_{1\leq i \leq l}$ are non-linear substitution functions.
-    \item $\lambda : M \mapsto A \times M$ the linear layer, where $\times$ is the matrix product.
+    \item $\sigma_{K}:V \mapsto V' = V \bigoplus K$ the key addition layer,
+    \item $\gamma : V'=(v'_1,v'_2,...,v'_l) \mapsto V'' = S_1(v'_1),S_2(v'_2),...,S_l(v'_l)$ the substitution layer, where $(S_j)_{1\leq j \leq l}$ are non-linear substitution functions.
+    \item $\lambda : V'' \mapsto A \times V''$ the linear layer, where $\times$ is the matrix product and $A$, an $l\times l$ matrix, is a parameter of the cipher.
 \end{itemize}
 
 In some SPN implementations, the final round sometimes skips the linear layer and an additional key addition is often performed after the final substitution layer.
 
-The S-boxes $(S_i)_{1\leq i \leq l}$ can be chosen identical. 
 All the S-boxes do not have the same cryptographic properties.
 One is considered secure if it exhibits the avalanche effect, meaning that changing a small change in the input changes the output greatly.
 For example, one input bit should change almost half of the output bits on average.
+The S-boxes $(S_j)_{1\leq j \leq l}$ can be chosen identical to ease the implementation and assure that one is not weaker than the others.
 % TODO: Decryption
 
 \begin{center}
@@ -207,14 +213,14 @@ For example, one input bit should change almost half of the output bits on avera
 \end{center}
 % TODO: change figure and caption (or add P box in text)
 
-\subsubsection{AES}
 
-The Advanced Encryption Standard (AES) is the replacement of DES chosen by the NIST in 2001.
-The algorithm, also called Rijndael, is a SPN. It exists in three variants:
+\textbf{The Advanced Encryption Standard (AES)} is the replacement of DES chosen by the NIST in 2001.
+The algorithm is a specification of the Rijndael design.
+It is a SPN that exists in three variants:
 \begin{itemize}
-    \item 10 rounds and 128-bit keys
-    \item 12 rounds and 192-bit keys
-    \item 14 rounds and 256-bit keys
+    \item 10 rounds and 128-bit keys,
+    \item 12 rounds and 192-bit keys,
+    \item 14 rounds and 256-bit keys.
 \end{itemize}
 
 The 128-bit block plaintext is arranged in a 4$\times$4 byte matrix
@@ -250,74 +256,119 @@ $\begin{psmallmatrix}
     1 & 2 & 3 & 1 \\
     1 & 1 & 2 & 3 \\
     3 & 1 & 1 & 2
-\end{psmallmatrix}$ so each byte of the column influences the output of the four other bytes.
+\end{psmallmatrix}$ so each byte of the column influences all the four bytes of the output.
 
-The details of the AES standard are defined here \parencite{Standards2001}.
+The details of the AES standard are defined in the Federal Information Processing Standards Publication 197 (FIPS PUBS 197) \parencite{Standards2001}.
 
-\subsection{Side Channel Analysis classic attacks}
+\subsection{Side Channel Analysis state-of-the-art attacks}
 
 All the implementations of cryptographic algorithms in real world devices provide more information to an attacker than just the plaintext and the ciphertext.
 These side-channel leakages can consist in the timing of operations, power consumption, electromagnetic emanations, etc.
-They are not taken into account by the mathematical models and very little side-channel information is enough to break many common ciphers.
-
-Non-invasive attacks and corresponding countermeasures have been studied extensively over the past decades.
+An attacker can observe these leakages.
+However, such observations might require direct access to the cryptographic module or complex experiments with precise probes placement or capture boards.
+These leakages are not taken into account by the mathematical models and very little side-channel information is enough to break common ciphers that are proven safe against an attacker who can only access the inputs and the outputs.
+The SCA attacks, also called passive attacks and their corresponding countermeasures have been studied extensively over the past decades.
 
 In the following, side channel attacks consist in associating the power consumption of a cryptographic module with the data processed by the module at the same time.
 Indeed, the physical properties of semiconductors link the data processed by a chip to its power consumption.
 
-To model the link between data transitions and power consumption, the Hamming weight and Hamming distance models are often used.
-
-The \textbf{Hamming Distance} of $a \in \mathbb{F}_2^n$ and $b \in \mathbb{F}_2^n$ is $H(a \bigoplus b) = \sum_{i=0}^{n-1} \mathbbm{1}_{a_i \neq b_i}$ where $a_i$ (resp. $b_i$) is the ith bit of a (resp. b).
-
-It counts the number of transitions when $a \rightarrow b$. For consecutive values in the same register, this metric correlates the Hamming distance with the power consumption.
-However, the attacker needs to obtain consecutive data values to use this model.
-A simpler solution is to consider that $a=0$. The model then becomes the following.
-
-The \textbf{Hamming Weight} of $a \in \mathbb{F}_2^n$ is $H(a) = \sum_{i=0}^{n-1} \mathbbm{1}_{a_i = 1}$ where $a_i$ is the ith bit of a.
-
-It counts the number of bits set to 1 when storing the variable a.
-It is the most widely used leakage model.
-
 \textbf{Single power analysis} (SPA) involves directly interpreting power consumption measurements collected during cryptographic operations \parencite{Kocher_Jaffe_Jun_1999}.
 SPA can yield information about a device's operation as well as key material.
+It does not use a leakage model as it is a very simple analysis.
 
-\textbf{Differential Power Analysis} (DPA) involves statistical tools to study multiple power consumption leakages from a cryptographic module.
-It aims to remove noise by using signal processing and error corrections techniques.
-It makes the assumption that the power consumption of a given operation follows a normal distribution at a given timestamp. 
+For all the other SCA, side channel leakages are assumed to follow a leakage model.
+This leakage model can either be profiled or non-profiled.
+The choice of a model depends on the system under study and its leakages.
+As it is a strong assumption to make, a wrong leakage model cannot lead to a successful attack.
 
-\textbf{Correlation Power Analysis} (CPA) is similar to DPA but makes further assumptions.
-It supposes a power consumption model, most often the Hamming weight model or the Hamming distance model.
-It then tries to correlate the modeled power consumption with the real consumption using the Pearson correlation coefficient. % TODO: Maybe explain what the PCC is (or not)
+\subsubsection{Profiling attacks}
 
-\textbf{Template attacks} (or profiling attacks) create a profile of the attacked device with many generated traces and uses it to later find the secret of the victim with a very small number of traces.
+Profiling attacks assume that the attacker has access to a clone device to model its leaking behavior.
+Attacks using such a model can retrieve a secret key with just a few traces but often need a lot of training on a specific architecture.
+
+\textbf{Template attacks} create a profile of the attacked device with many generated traces and use it to later find the secret of the victim with a very small number of traces.
 
 First described in 2003, it uses a copy of the protected device to record numerous power traces using many plaintexts and keys \parencite{Chari_Rao_Rohatgi_2003}.
 The noise is modeled using multivariate Gaussian distributions, one for each possible subkey.
 If a subkey is a byte, then the attack would need 256 different templates.
-The samples are used to identify the $n$ points where the differences between averaged signals are the largest.
+The samples are used to identify the points where the differences between averaged signals are the largest.
 These are points of interest and the model will only focus on their values.
 The "templates" are then created for each subkey on these points of interest by combining the mean signal $M_i$ and the noise covariance matrix $\Sigma_{N_i}$.
-The attack then consists in computing the probability that the trace from the target device originates from each one of the template.
+The attack then consists in computing the probability that the trace from the target device originates from each template.
 Selecting the highest probability is optimal.
-Depending on the training set, a few or even one leakage can be enough to identify a subkey.
-The original paper also calculates the error probability of their test and explain how to improve the attack by pruning the least probable hypotheses.
-
-
-\textbf{Mutual Information Attacks} (MIA) uses entropy and mutual information between the leakage and the predicted data.
-It does not require any previous knowledge of the studied device and can be applied in any context.
-
-The reference paper \parencite{Prouff_Rivain_2009} presents a theoretical analysis of the assumptions made in side channel attacks.
-It studies MIA in the Gaussian leakage model and in the case of masked implementations.
-By making fewer assumptions about the model, MIA has worse performance than other techniques using correlations between traces on devices following the Hamming weight model.
-However, it could retrieve the key in a context where the trace is not linearly linked to the Hamming weight of the manipulated data.
+Depending on the training set, a few leakages can be enough to identify a subkey.
+The authors also calculate the error probability of their test and explain how to improve the attack by pruning the least probable hypotheses.
 
 
 Over the last years, \textbf{Deep Learning based Attacks} (DL) have reached the state of the art of side channel attacks.
+The training phase builds a profiled model that is very efficient against one architecture and one leakage type.
 Deep Neural Networks (DNNs) are able to efficiently break implementations of AES that resisted to other types of SCA \parencite{Maghrebi_Portigliatti_Prouff_2016}.
 % TODO: explain how DNNs are useful. Or not and just conclude
 
-These are the main side channel analysis techniques. They aim to retrieve the key, or some other secret component, involved in a known algorithm.
+\subsubsection{Non-profiled attacks}
+
+Non-profiled attacks use non-profiled models that suppose a link between the data processed and the corresponding leakages.
+They are more general than profiled models because they are not restrained to one specific implementation.
+To model the link between data transitions and power consumption, the Hamming weight and Hamming distance models are often used.
+We first present these two models, then the attack that use them.
+Finally, we describe the Mutual Information Attack (MIA), which is based on its own model.
+
+\paragraph{}
+The \textbf{Hamming Distance} of $a \in \mathbb{F}_2^n$ and $b \in \mathbb{F}_2^n$ is $H(a \bigoplus b) = \sum_{i=0}^{n-1} \mathbbm{1}_{a_i \neq b_i}$ where $a_i$ (resp. $b_i$) is the $i$th bit of $a$ (resp. $b$).
+It counts the number of transitions when $a \rightarrow b$.
+For consecutive values in the same register, this metric correlates the Hamming distance with the power consumption.
+However, the attacker needs to obtain consecutive data values to use this model.
+A simpler solution is to consider that $a=0$. The model then becomes the following.
+
+The \textbf{Hamming Weight} of $a \in \mathbb{F}_2^n$ is $H(a) = \sum_{i=0}^{n-1} \mathbbm{1}_{a_i = 1}$ where $a_i$ is the $i$th bit of $a$.
+It counts the number of bits set to 1 when storing the variable $a$.
+It is the most widely used leakage model, because it is simple and efficient to model the leakages of software implementations, whereas the Hamming distance model is better for hardware implementations.
+
+\paragraph{}
+\textbf{Differential Power Analysis} (DPA) involves statistical tools to study multiple power consumption leakages from a cryptographic module.
+It aims to remove noise by using signal processing and error corrections techniques.
+The analysis assumes a non-profiled leakage model.
+
+\smallbreak
+\textbf{Correlation Power Analysis} (CPA) is a kind of DPA but makes further assumptions.
+It supposes a power consumption model, most often the Hamming weight model or the Hamming distance model.
+It then tries to correlate the modeled power consumption with the real consumption using the Pearson correlation coefficient. % TODO: Maybe explain what the PCC is (or not)
+
+\smallbreak
+\textbf{Mutual Information Attacks} (MIA) uses entropy and mutual information between the leakage and the predicted data.
+Thus, it does not rely on the Hamming distance or Hamming weight models.
+This model does not require any previous knowledge of the studied device and can be applied in any context.
+Prouff and Rivain present a theoretical analysis of the assumptions made in side channel attacks \parencite{Prouff_Rivain_2009}.
+MIA is studied in the Gaussian leakage model and in the case of masked implementations.
+By making fewer assumptions about the model, MIA has worse performance than other techniques using correlations between traces on devices following the Hamming weight model.
+However, it could retrieve the key in a context where the trace is not linearly linked to the Hamming weight of the manipulated data.
+
+\paragraph{}
+These SCA aim to retrieve the key, or some other secret component, involved in a known algorithm.
 Template attacks even use a replica of the attacked device to "prepare" the attacks.
+
+There are many countermeasures to prevent these attacks or make them more difficult.
+The following subsection is about the main Side Channel countermeasures.
+
+\subsection{Side Channel Analysis countermeasures}
+
+There are two types of SCA countermeasures. 
+The first one consists in eliminating or reducing the leakages and the second one consists in making the leaked information unrelated to the secret data.
+
+Physical shielding, power line conditioning, noise addition and adding random delays are of the first type.
+They do not prevent SCA but with these countermeasures activated, an attacker has to collect more measurements.
+
+Masking is an effective countermeasure of the second type.
+It consists in decorrelating the intermediate results from the secret values.
+To do that, a different random value is used each round and the operations are modified so that the final result does not depend on the random value anymore.
+Implementing masking effectively is very specific to each architecture and each attacker model.
+The most common masking strategies are boolean (xor $\bigoplus$) and arithmetic (+ mod $2^n$). % TODO: choose a reference for masking
+
+
+
+
+
+These are the main side channel analysis techniques and countermeasures. 
 Nonetheless, it is also important to verify the security of cryptographic implementations against weaker opponents that do not know the exact implementation or its details.
 For cryptographic systems that choose to use proprietary algorithms or a specific set of parameters for a known standard, the architecture itself is a secret component that can be determined through SCA.
 The following section is about Side Channel Analysis Reverse Engineering (SCARE) and aims at assessing the gains or losses in security of choosing secret parameters for symmetric cryptography algorithms.
@@ -334,35 +385,35 @@ The following section is about Side Channel Analysis Reverse Engineering (SCARE)
 Side-Channel Analysis for Reverse Engineering (SCARE) uses side-channel information to reverse-engineer the secret parts of a cryptographic implementation.
 It applies the techniques of SCA to recover implementations details among:
 \begin{itemize}
-    \item Secret constants such as the substitution blocks of a SPN \parencite{Novak_2003}.
-    \item Algorithm structure such as the number of rounds, the size of the S-boxes used, ...
-    \item Which technologies and methods are used by the developer of the products.
+    \item secret constants such as the S-boxes of a SPN \parencite{Novak_2003},
+    \item algorithmic structure such as the number of rounds or the size of the S-boxes used,
+    \item which technologies and methods are used by the developer of the products.
 \end{itemize}
 
 \subsection{SCARE attacks on non AES ciphers}
 \label{scare_non_aes}
 
+\subsubsection{SCARE of the GSM}
 The first SCARE attack was proposed by Novak in 2003 to retrieve the secret authentication and session key generation algorithm of the GSM standard \parencite{Novak_2003}.
 
 The COMP128-2 algorithm used in SIM cards is kept secret despite Kerckhoffs' principle.
 Knowing the architecture, the computations involved and the secret key, Novak retrieves the contents of substitution blocks implemented as lookup tables by analyzing the power consumption of the cipher.
 
-The idea behind the attack is to use \textbf{collision analysis} because different values of a parameter can give the same intermediate result.
+The idea behind the attack is to use \textbf{collision analysis}.
+It assumes that the same value of an input always leaks in the same way.
 Identifying equal intermediate results allows an attacker to restore the content of the lookup table and thus break the substitution block.
 
-To do that, it uses the means of measurements for all the possible values of a given input byte as an identifier.
-The equality between the leakages provides a set of equation at each round of the cipher.
-Combining these sets of equation allows to solve them and recover the lookup table content.
+To do that, it uses the means of measurements for all the possible values of a given input byte to distinguish them.
+The equality between the leakages provides a set of equations at each round of the cipher.
+Combining these sets of equations allows to solve them and recover the lookup table content.
 
 This attack is based on the assumption that two lookups to the same value gives very similar leakages.
 It relies a lot on the quality of the leakages to identify identical lookups.
-Because of that, \textbf{table masking} is an effective countermeasure.
-It consists in decorrelating the intermediate results from the secret values.
-To do that, a different random value is used each round and the operations are modified so that the final result does not depend on the random value anymore.
-Implementing masking effectively is very specific to each architecture and each attacker model.
-The most common masking strategies are boolean (xor $\bigoplus$) and arithmetic (+ mod $2^n$). % TODO: choose a reference for masking
+Because of that, table masking is an effective countermeasure.
 
-\smallbreak
+
+\subsubsection{SCARE of the DES}
+
 Another SCARE method relies on \textbf{correlation power analysis}.
 An example of such attack is the reverse engineering of DES, in which the authors assume that the structure and the constants are unknown \parencite{Daudigny_Ledig_Muller_Valette_2005}.
 Strong assumptions on the quality of the power leakages allow the attacker to extract scheduling information for each bit at the clock cycle level using CPA.
@@ -377,12 +428,13 @@ The key scheduling algorithm can also be found using the same technique.
 
 The scheduling information can then be used to isolate traces corresponding to each S-box and perform another SCA attack to recover the key.
 
-\smallbreak
+
 \textbf{CPA} techniques for reverse engineering can also be used under much weaker assumptions.
-The attacks presented in the paper work in the known plaintext or ciphertext attacker model \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010}.
+Another attack is possible in the known plaintext or ciphertext attacker model \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010}.
 It retrieves the S-boxes of a modified DES using custom S-boxes by using brute force.
-To attack $i$ input bits of a S-box, the attacker only considers a set of traces that keep 6-i bits of the target S-box to a constant value (which is possible since the plaintext is known).
-A correlation program can then map these traces to the corresponding function, a subpart of the S-box.
+To attack $i$ input bits of an S-box, the attacker only considers a set of traces that keep $6-i$ bits of the target S-box to a constant value (which is possible since the plaintext is known).
+A correlation analysis then recovers the partial function that maps the $i$ input bits that are modified to one output bit.
+Repeating this operation for all output bits and all group of input bits unravel the whole S-box design.
 To recover one S-box of DES, 960 CPAs are necessary using this method on 2 input bits at a time.
 
 
@@ -396,14 +448,18 @@ To recover one S-box of DES, 960 CPAs are necessary using this method on 2 input
 
 The Advanced Encryption Standard is a publicly-known and clearly defined architecture. 
 However, its parameter values can be changed to obtain a new cipher, that is not AES but has the same structure.
-Following Kerckhoffs' principle, this new cipher may not be safer than a classic implementation of AES.
+Following Kerckhoffs' principle, this new cipher is probably less safe than a classic implementation of AES.
 The following examples show how the secret parameters can be recovered using SCARE.
 
+\subsubsection{SCARE of SPNs}
+\label{scare_of_spns}
+
 This SCARE method is designed for all SPN structures, including modified AES ciphers \parencite{Rivain_Roche_2013}.
-It considers that the attacker can select parts of the side-channel traces where the s-box computations are located.
+It considers that the attacker can select parts of the side-channel traces where the S-box computations are located.
 The attacker must be able to decide on collisions between the processed values from the observation of these traces.
 For that, any SCA method can be used.
-The attacker also knows the plaintext. If the plaintext is chosen, the complexity of the attack is lowered.
+The attacker also knows the plaintext.
+If the plaintext is chosen, the complexity of the attack is lowered.
 
 Then the attack consists in building simple linear equations systems to recover the S-box values, the linear layer coefficients and the secret round keys.
 It retrieves the first round key by fixing its first bit and then identifying the collisions between the already known bits and the remaining bits.
@@ -413,28 +469,31 @@ Then, only the remaining round keys are left to be discovered.
 It can be done using the same method as for the first one.
 
 This attack is very generic and can be applied to all SPNs schemes.
-It also works if the leakage is noisy or on masked implementations.
+It also works if the leakage is noisy.
 
 According to the authors, a sufficient countermeasure is to combine masking and operation shuffling.
 Non-sequential execution is also outside the scope of the attack and make it inefficient.
 
-\smallbreak
+
+\subsubsection{SCARE of masked AES}
+
 This very general attack on SPNs has been refined for AES in 2015 under more restrictive assumptions \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
 The work is divided in two parts.
 
-The first one does a SCARE of the AES under a very similar same model than Rivain and Roche \parencite{Rivain_Roche_2013}.
+The first one does a SCARE of the AES under a very similar model than the one presented in section \ref{scare_of_spns}.
 It still considers that the attacker can identify collisions between two different S-Box computations.
-However, this method only applies to AES with secret parameters and can deal with masking and operation shuffling.
-In particular, the S-box is the same for each round and the key derivation algorithm is the one from AES with secret constants.
+The difference is that this method can deal with masking and operation shuffling at the cost of only applying to AES with secret parameters.
+In particular, the S-box has to be the same for each round and the key derivation algorithm must be the one from AES with secret constants.
 
 The second part does a SCARE of the AES assuming that the attacker can identify collisions of Hamming weights of inputs/outputs of different S-box computations.
 This model is weaker but more realistic.
 It can resist at least to simple masking.
 
-\smallbreak
-To address the masking countermeasure, Clavier et al. only use intra-traces setting, meaning that the attacker is able to detect collisions between two S-Box only in a same execution \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
-Indeed, they assume that an 8-bit Boolean masking only refreshes the randomization of S-boxes at each execution because of time and memory constraints.
-Then collisions that happen during one execution can be detected.
+\paragraph{}
+Clavier et al first consider an 8-bit Boolean masking that only refreshes the randomization of S-boxes at each execution because of time and memory constraints.
+It is a common way to implement masking without it being too expensive.
+To address the masking countermeasure, they use the intra-traces setting, meaning that the attacker is able to detect collisions between two S-Box only in the same execution.
+Then collisions that happen during one execution can be exploited.
 Masking on other operations do not affect the attack.
 
 The shuffling countermeasure is more complex to evade.
@@ -443,7 +502,6 @@ The remaining information is the number of different S-Box inputs at each round,
 To retrieve the first round key, it finds a plaintext such that the first round SubBytes operation only presents one colliding value occurring more than once.
 By modifying each one of the 16 bytes of the plaintext and picking the indexes for which the multiplicity of the colliding value is reduced, the attacker can infer relations between the key bytes.
 The process can be repeated with new plaintexts until enough relations are obtained, and the first round key can be determined (up to a xor with a constant).
-
 The same can be done for the last round key.
 
 To recover the S-box, the same concept is used.
@@ -451,21 +509,20 @@ Collisions between the first S-box and the last S-box computations are identifie
 Each collision gives information about the byte values and repeating the operation for multiple plaintexts eventually gives enough information to retrieve the S-box content.
 
 Since the first and last round keys are known, the key scheduling algorithm can be found through exhaustive search.
-
 To recover the ShiftRows and MixColumns parameters, the attacker can craft plaintexts by only changing one byte to obtain a small subset of possible values for MixColumns columns and ShiftRows parameters.
 Different byte values provide new sets of possible values and their intersection reveals the secret parameters.
+All the secret parameters of the AES implementation have then been discovered.
 
-\smallbreak
-To perform a SCARE attack on a modified AES under the Hamming weight model, Clavier et al. introduce and reason on special sets.
+\paragraph{}
+To perform their second SCARE attack on a modified AES under the Hamming weight model, Clavier et al. introduce and reason on special sets.
 They are constituted of the inputs (respectively the outputs) that have a given Hamming weight and whose S-box output (respectively input) has another given Hamming weight that will collide under the Hamming weight collisions model.
-The attack first retrieves the first and last round keys and the ShiftRow parameters, then builds the special sets by analyzing collisions and non-collisions between chosen plaintexts, and reasons on their cardinal.
+The attack first retrieves the first and last round keys and the ShiftRows parameters, then builds the special sets by analyzing collisions and non-collisions between chosen plaintexts, and reasons on their cardinal.
 The special sets allow to reduce the number of potential candidates for each byte value during the MixColumns and S-box retrieval stages.
 If a set has a cardinal of 1, then it identifies one unique value.
+This attack is very efficient on a simulated implementation and can recover the parameters of an AES using approximately 250 traces, whereas 400 (respectively 4000) are needed under the unprotected (respectively protected by a first-order Boolean masking and a random shuffling of operations) collision value model.
 
-This attack is very efficient and can recover the parameters of an AES using approximately 250 traces, whereas 400 (respectively 4000) are needed under the unprotected (respectively protected by a first-order Boolean masking and a random shuffling of operations) collision value model.
 
-
-% Est-ce vraimentpertinent de parler d'une cryptanalyse dans un rapport sur les SCA ?
+% Est-ce vraimentpertinent de parlerShiftRow d'une cryptanalyse dans un rapport sur les SCA ?
 %\parencite{Tiessen_Knudsen_Kölbl_Lauridsen_2015} presents an integral cryptanalysis of an AES with a secret S-box and fewer rounds. It is not a SCA but is still closely related to our subject.
 
 %\parencite{Rivain_Roche_2013} presents a generic SCARE attack against a wide class of SPN block ciphers.
@@ -483,8 +540,7 @@ It allows for better performances and better security through isolation of the c
 
 Also, implementing cryptography in hardware modules makes it more difficult to use SCA techniques.
 Indeed, many SCA attacks assume that the execution is sequential, whereas cryptographic modules implemented on an ASIC or an FPGA use parallelization whenever it is possible.
-Parallelizing the S-box lookups makes it impossible to get clean and separated power consumption traces.
-
+Parallelizing the S-box lookups makes collisions based attacks impossible and increases the measurements needed for the other attacks.
 Then, hardware cryptographic implementations leakages are noisier, due to the physical setup and can use other countermeasures, such as desynchronized execution.
 So attacks on hardware devices cannot recover as much information as attacks on software algorithms.
 For example, the precise scheduling information recovered in the attack presented in \ref{scare_non_aes} is unrealistic on a hardware target \parencite{Daudigny_Ledig_Muller_Valette_2005}.
