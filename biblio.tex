@@ -100,7 +100,18 @@
 \domain{Domain: Cryptography and Security}
 
 %write your abstract here
-\abstract{write your abstract here}
+\abstract{
+% Today, the security of modern cryptographic algorithms relies on difficult mathematical problems or can be proven mathematically.
+% However, these proofs apply only to "black-box" adversaries, even if they are implemented in software or hardware modules.
+% These modules are physically accessible, and attackers can retrieve secret information by observing and exploiting their physical leakages (e.g. power consumption).
+% This type of attack is called side-channel analysis (SCA).
+% Most often, the secret to recover is a private key while the details of the cryptographic system and its architecture are known.
+% Furthermore, SCA constitute a powerful tool to reverse-engineer some secret parts of a cryptographic implementation.
+% This is called Side-Channel Analysis for Reverse-Engineering (SCARE) and it aims at recovering information about a cryptographic process (and not the manipulated data as usually targeted in side-channel attacks) based on the device power consumption.
+% The purpose of this internship is to evaluate the potential threat of using SCARE techniques on a hardware implementation of an SPN encryption scheme.
+% While SCARE attacks mainly target software implementations, the few works on hardware implementations are focused on Feistel constructions and only a few elements are provided for Substitution Permutation Networks.
+% In this bibliographic review, we introduce the context of the internship, as well as prospective issues and state-of-the-art techniques on both software and hardware cryptographic systems.
+}
 
 
 
@@ -111,14 +122,57 @@
 
 \section*{Introduction}
 
-Following Kerckhoffs' principle, the security of a cryptographic device shall not rely on the secrecy of its mechanisms \parencite{Kerckhoffs_1883}.
-However, in some specific contexts, having a secret implementation can add a layer of security, by increasing the practical difficulty of the attack.
+Cryptography is the study of techniques for secure communication in the presence of adversarial behavior.
+It aims to guaranty confidentiality, integrity and authentication of a communication.
+A cryptographic algorithm takes plaintext and key as input and outputs a ciphertext, that can be deciphered with another secret key to retrieve the plaintext. % peut être retirer to retrieve the plaintext
+For a symmetric algorithm, the encryption and the decryption keys are the same. % If the encryption and decryption keys are the same, we say that the algorithm is symmetric / Some of these algo are said to be symmetric, which means that ...
+The confidentiality property states that the ciphertext must be indistinguishable from a random stream of bytes for someone that does not know the deciphering key.
 
-\section{State of the art of Side Channel Attacks on SPNs}
+The confidentiality of modern cryptographic algorithms can either be proven mathematically or be based on difficult mathematical problems.
+However, these security proofs only apply to "black-box" adversaries, even if the algorithms are implemented in software or hardware modules.
+These modules, such as smart cards or computer programs running on a CPU, are physically accessible, and attackers can retrieve secret information by observing and exploiting their physical leakages (e.g. power consumption).
+This type of attack is called side-channel analysis (SCA).
 
-In this section, we formally define substitution–permutation network ciphers.
-Then, we introduce some of the most classical and standardized implementations.
-Finally, we present several Side Channel Analysis state-of-the-art attacks on these implementations.
+Kerckhoffs stated that the security of a cryptographic device shall not rely on the secrecy of its mechanisms  \parencite{Kerckhoffs_1883}.
+Following his principles, adversaries are supposed to have a perfect knowledge of the cryptographic algorithms.
+Because of that, the secret to recover is generally limited to a private key while the details of the cryptographic system and its architecture are known to the adversary.
+However, in some specific contexts, a secret implementation can add a layer of security, at least by increasing the practical difficulty of the attack.
+For instance, a proprietary cipher can have its general structure revealed, but some constants kept secret.
+The algorithm itself can be kept secret, or the details of its implementation.
+
+SCA constitute a powerful tool to reverse-engineer some secret parts of a cryptographic implementation.
+This is called Side-Channel Analysis for Reverse-Engineering (SCARE) and it aims at recovering information about a cryptographic process (and not the manipulated data as usually targeted in side-channel attacks) based on the device power consumption.
+It has been studied for software implementations of cryptography and can retrieve the characteristics of a proprietary algorithm quite efficiently. %TODO citations
+However, few hardware implementations have been studied, and the existing literature is mainly targeted on Feistel ciphers.
+Feistel ciphers are a very common category of symmetric cryptography algorithms.
+The two most historically known Feistel ciphers are the US Data Encryption Standard (DES) and Blowfish. %TODO citation ?
+Another very popular category of symmetric cryptography algorithms is substitution–permutation networks (SPN).
+The most used SPN is the Advanced Encryption Standard (AES). %TODO citation ?
+The SCARE possibilities for hardware SPNs have almost not been studied yet, thus this internship aims at completing the SCARE studies for SPNs.
+
+More specifically, the purpose of this internship is to evaluate the potential threat of using SCARE techniques on a hardware implementation of an SPN encryption scheme.
+To do that, a good understanding of existing side channel attacks on both software and hardware implementations is needed.
+These attacks can be against SPNs specifically or other similar symmetric cryptographic algorithms.
+The goal is to propose new attack paths for the SPN hardware case and assess their relevance based on standardized benchmarks.
+Both simulated data and real traces from a hardware capture board will be tested.
+The different hypotheses and assumptions of each attack path will also be particularly looked upon.
+
+In this bibliographic review, we first define the ciphers and the main SCA techniques that will be used later.
+Secondly, we present an overview of SCARE methods and their applications.
+The analyses are separated depending on the cipher they target and their attacker model.
+Thirdly, we focus on hardware implementations and explain the differences between software and hardware SCA and why there are fewer studies on hardware implementations.
+We present the published hardware SCARE attacks and show the lack of literature for SPN hardware SCARE.
+Finally, we discuss prospective issues and early reflections on the upcoming work in the conclusion
+
+%In this bibliographic review, we introduce the context of the internship, as well as prospective issues and state-of-the-art techniques on both software and hardware cryptographic systems.
+
+
+\section{State of the art of Side Channel Attacks}
+
+In this section, we formally define the block ciphers we will be studying, in particular substitution–permutation network ciphers.
+We also introduce some of the most classical and standardized implementations.
+Then, we define several Side Channel Analysis state-of-the-art attacks on these implementations.
+Finally, we present the most common countermeasures to SCA. 
 
 
 Symmetric cryptography refers to the confidentiality protection of a communication between a sender and a receiver who share the same secret key.
@@ -126,6 +180,7 @@ Symmetric ciphers historically relied on legacy substitution ciphers but since t
 
 \textbf{Substitution ciphers} replace the units of plaintext by ciphertext in a defined manner, with the help of a key.
 Those are well known in history but can nowadays be easily decrypted using a frequency table or a similar mechanism.
+They must not be mixed up with substitution-permutation networks that are a completely different kind of cipher.
 
 \textbf{Stream ciphers} combine plaintext digits with a pseudo-random cipher digit stream called a keystream.
 
@@ -586,7 +641,7 @@ For each 4-bits input word, the CPA gives away the output of the Feistel functio
 The attacker can use the same technique to recover the rest of the Feistel function.
 If the level of noise is sufficiently low, the attacker can even do it bit by bit instead of four bits by four bits.
 
-To recover the whole Feistel function in the general case, it is considered as a vectorial function made of polynomials of the inputs bits and of degree $d$.
+To recover the whole Feistel function in the general case, it is considered as a vector function made of polynomials of the inputs bits and of degree $d$.
 If $n$ is the size of the input/output, there are around $n^d/d!$ coefficients for each one of the $n$ polynomials and as many SCA to perform.
 However, commonly used schemes are more restrictive and thus reduce the number of possibilities to account for.
 
