@@ -101,16 +101,15 @@
 
 %write your abstract here
 \abstract{
-% Today, the security of modern cryptographic algorithms relies on difficult mathematical problems or can be proven mathematically.
-% However, these proofs apply only to "black-box" adversaries, even if they are implemented in software or hardware modules.
-% These modules are physically accessible, and attackers can retrieve secret information by observing and exploiting their physical leakages (e.g. power consumption).
-% This type of attack is called side-channel analysis (SCA).
-% Most often, the secret to recover is a private key while the details of the cryptographic system and its architecture are known.
-% Furthermore, SCA constitute a powerful tool to reverse-engineer some secret parts of a cryptographic implementation.
-% This is called Side-Channel Analysis for Reverse-Engineering (SCARE) and it aims at recovering information about a cryptographic process (and not the manipulated data as usually targeted in side-channel attacks) based on the device power consumption.
-% The purpose of this internship is to evaluate the potential threat of using SCARE techniques on a hardware implementation of an SPN encryption scheme.
-% While SCARE attacks mainly target software implementations, the few works on hardware implementations are focused on Feistel constructions and only a few elements are provided for Substitution Permutation Networks.
-% In this bibliographic review, we introduce the context of the internship, as well as prospective issues and state-of-the-art techniques on both software and hardware cryptographic systems.
+    The confidentiality of modern cryptographic algorithms can either be proven mathematically or be based on difficult mathematical problems.
+    However, these security proofs only apply to "black-box" adversaries, even if the algorithms are implemented in software or hardware modules.
+    These modules, such as smart cards or computer programs running on a CPU, are physically accessible, and attackers can retrieve secret information by observing and exploiting their physical leakages (e.g. power consumption).
+    This type of attack is called side-channel analysis (SCA).
+    Most often, the secret to recover is a private key while the details of the cryptographic system and its architecture are known.
+    However, SCA can also be used to reverse engineer some parts or the whole structure of a cryptographic algorithm.
+    This is called Side-Channel Analysis for Reverse-Engineering (SCARE).
+    The purpose of this internship is to evaluate the potential threat of using SCARE techniques on a hardware implementation of an SPN encryption scheme.
+    In this bibliographic review, we introduce the context of the internship, as well as prospective issues and state-of-the-art SCARE techniques on both software and hardware cryptographic systems.
 }
 
 
