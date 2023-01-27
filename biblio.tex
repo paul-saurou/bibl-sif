@@ -102,8 +102,8 @@
 %write your abstract here
 \abstract{
     The confidentiality of modern cryptographic algorithms can either be proven mathematically or be based on difficult mathematical problems.
-    However, these security proofs only apply to "black-box" adversaries, even if the algorithms are implemented in software or hardware modules.
-    These modules, such as smart cards or computer programs running on a CPU, are physically accessible, and attackers can retrieve secret information by observing and exploiting their physical leakages (e.g. power consumption).
+    However, these security proofs do not account for the particularities of the implementations.
+    The algorithms are typically embedded in smart cards or run on a CPU, and attackers can retrieve secret information by observing and exploiting their physical leakages (e.g. power consumption).
     This type of attack is called side-channel analysis (SCA).
     Most often, the secret to recover is a private key while the details of the cryptographic system and its architecture are known.
     However, SCA can also be used to reverse engineer some parts or the whole structure of a cryptographic algorithm.
@@ -123,9 +123,9 @@
 
 Cryptography is the study of techniques for secure communication in the presence of adversarial behavior.
 It aims to guaranty confidentiality, integrity and authentication of a communication.
-A cryptographic algorithm takes plaintext and key as input and outputs a ciphertext, that can be deciphered with another secret key to retrieve the plaintext. % peut être retirer to retrieve the plaintext
-For a symmetric algorithm, the encryption and the decryption keys are the same. % If the encryption and decryption keys are the same, we say that the algorithm is symmetric / Some of these algo are said to be symmetric, which means that ...
-The confidentiality property states that the ciphertext must be indistinguishable from a random stream of bytes for someone that does not know the deciphering key.
+An encryption algorithm takes plaintext and key as input and outputs a ciphertext, that can be deciphered with another secret key to retrieve the plaintext.
+For a symmetric algorithm, the encryption and the decryption keys are the same. 
+The confidentiality property states that the ciphertext must be indistinguishable from a random stream of bytes for someone that does not know the decryption key.
 
 The confidentiality of modern cryptographic algorithms can either be proven mathematically or be based on difficult mathematical problems.
 However, these security proofs only apply to "black-box" adversaries, even if the algorithms are implemented in software or hardware modules.
@@ -161,7 +161,7 @@ Secondly, we present an overview of SCARE methods and their applications.
 The analyses are separated depending on the cipher they target and their attacker model.
 Thirdly, we focus on hardware implementations and explain the differences between software and hardware SCA and why there are fewer studies on hardware implementations.
 We present the published hardware SCARE attacks and show the lack of literature for SPN hardware SCARE.
-Finally, we discuss prospective issues and early reflections on the upcoming work in the conclusion
+Finally, we discuss prospective issues and early reflections on the upcoming work in the conclusion.
 
 %In this bibliographic review, we introduce the context of the internship, as well as prospective issues and state-of-the-art techniques on both software and hardware cryptographic systems.
 
@@ -220,14 +220,20 @@ Both the security and the performance of the Feistel network depend on the Feist
 A specificity of Feistel schemes is that $f$ does not need to be invertible.
 The decryption is almost identical to the encryption, the only difference being the reversal of the round keys order.
 
-% TODO: add image
+\begin{center}
+    \includegraphics[width=1\textwidth]{../images/feistel.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{A sketch of a Feistel network with 3 rounds, encrypting a plaintext $L_0+R_0$ into a ciphertext block $L_3+R_3$. The $L_i$ are the intermediate states and $F(K_i)$ is the Feistel function depending on the round key $K_i$.}
+    \label{fig_feistel}
+\end{center}
+% TODO: add image ref in text
 
 
 \textbf{The Data Encryption Standard (DES)} is a Feistel network scheme that has been highly influential in the advancement of cryptography.
 It is unsecure due to its too short 56-bit key size which make it vulnerable to brute-force attacks.
 For historical reasons this design still is interesting.
 It consists in a 16 round Feistel network and operates on blocks of 64 bits.
-The Feistel function of DES is shown on %TODO: figure
+%The Feistel function of DES is shown on %TODO: figure
 
 First the 32-bit half-block is expanded to 48 bits using an expansion permutation function.
 Then the 48-bit block is xored with the round subkey and goes through a substitution layer.
@@ -260,57 +266,64 @@ The S-boxes $(S_j)_{1\leq j \leq l}$ can be chosen identical to ease the impleme
 % TODO: Decryption
 
 \begin{center}
-    \includegraphics[width=0.5\textwidth]{../images/spn_wiki.png}
+    \includegraphics[width=1\textwidth]{../images/spn_wiki.png}
     \captionsetup{hypcap=false}
-    \captionof{figure}{A sketch of a substitution–permutation network with 3 rounds, encrypting a plaintext block of 16 bits into a ciphertext block of 16 bits. The S-boxes are the Si, the P-boxes are the same P, and the round keys are the Ki. Image and caption from wikipedia.org}
+    \captionof{figure}{A sketch of a substitution–permutation network with 3 rounds, encrypting a plaintext block of 16 bits into a ciphertext block of 16 bits. The S-boxes are the Si, and the round keys are the Ki. Image inspired by wikipedia.org}
     \label{fig_spn}
 \end{center}
 % TODO: change figure and caption (or add P box in text)
 
-
 \textbf{The Advanced Encryption Standard (AES)} is the replacement of DES chosen by the NIST in 2001.
 The algorithm is a specification of the Rijndael design.
-It is a SPN that exists in three variants:
+It is an SPN that exists in three variants:
 \begin{itemize}
     \item 10 rounds and 128-bit keys,
     \item 12 rounds and 192-bit keys,
     \item 14 rounds and 256-bit keys.
 \end{itemize}
 
-The 128-bit block plaintext is arranged in a 4$\times$4 byte matrix
-$\begin{psmallmatrix}
-    m0 & m4 & m8 & m12 \\
-    m1 & m5 & m9 & m13 \\
-    m2 & m6 & m10 & m14 \\
-    m3 & m7 & m11 & m15
-\end{psmallmatrix}$
+The 128-bit block plaintext is arranged in a 4$\times$4 byte matrix, as shown in figure \ref{fig_aes}.
+% $\begin{psmallmatrix}
+%     m0 & m4 & m8 & m12 \\
+%     m1 & m5 & m9 & m13 \\
+%     m2 & m6 & m10 & m14 \\
+%     m3 & m7 & m11 & m15
+% \end{psmallmatrix}$
 The round keys are derived using the AES key schedule.
 All the 16 S-boxes are the same, and their design is chosen to have no fixed points.
 The substitution operation is often referred as SubBytes operation.
-The linear layer is divided into a ShiftRows and a MixColumns operation.
-The ShiftRows step cyclically shifts the bytes in each row by a certain offset (from 0 to 3):
-$\begin{psmallmatrix}
-    m0 & m4 & m8 & m12 \\
-    m1 & m5 & m9 & m13 \\
-    m2 & m6 & m10 & m14 \\
-    m3 & m7 & m11 & m15
-\end{psmallmatrix}
-\rightarrow
-\begin{psmallmatrix}
-    m0 & m4 & m8 & m12 \\
-    m5 & m9 & m13 & m1 \\
-    m10 & m14 & m2 & m6 \\
-    m15 & m3 & m7 & m11 \\
-\end{psmallmatrix}$
+The linear layer is divided into a ShiftRows and a MixColumns operations.
+The ShiftRows step cyclically shifts the bytes in each row by a certain offset (from 0 to 3).
+% $\begin{psmallmatrix}
+%     m0 & m4 & m8 & m12 \\
+%     m1 & m5 & m9 & m13 \\
+%     m2 & m6 & m10 & m14 \\
+%     m3 & m7 & m11 & m15
+% \end{psmallmatrix}
+% \rightarrow
+% \begin{psmallmatrix}
+%     m0 & m4 & m8 & m12 \\
+%     m5 & m9 & m13 & m1 \\
+%     m10 & m14 & m2 & m6 \\
+%     m15 & m3 & m7 & m11 \\
+% \end{psmallmatrix}$
 
 
-The MixColumns step then multiplies each column in place by the matrix 
-$\begin{psmallmatrix}
-    2 & 3 & 1 & 1 \\
-    1 & 2 & 3 & 1 \\
-    1 & 1 & 2 & 3 \\
-    3 & 1 & 1 & 2
-\end{psmallmatrix}$ so each byte of the column influences all the four bytes of the output.
+The MixColumns step then multiplies each column in place by a standard matrix.
+% $\begin{psmallmatrix}
+%     2 & 3 & 1 & 1 \\
+%     1 & 2 & 3 & 1 \\
+%     1 & 1 & 2 & 3 \\
+%     3 & 1 & 1 & 2
+% \end{psmallmatrix}$
+During this step, each byte of the column influences all the four bytes of the output.
+
+\begin{center}
+    \includegraphics[width=1\textwidth]{../images/aes2.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{A sketch of a round of AES. S is the S-box and $K_i$ the round key.}
+    \label{fig_aes}
+\end{center}
 
 The details of the AES standard are defined in the Federal Information Processing Standards Publication 197 (FIPS PUBS 197) \parencite{Standards2001}.
 
@@ -333,7 +346,7 @@ It does not use a leakage model as it is a very simple analysis.
 For all the other SCA, side channel leakages are assumed to follow a leakage model.
 This leakage model can either be profiled or non-profiled.
 The choice of a model depends on the system under study and its leakages.
-As it is a strong assumption to make, a wrong leakage model cannot lead to a successful attack.
+As it is a strong assumption to make, a wrong leakage model may not lead to a successful attack.
 
 \subsubsection{Profiling attacks}
 
@@ -356,7 +369,7 @@ The authors also calculate the error probability of their test and explain how t
 
 Over the last years, \textbf{Deep Learning based Attacks} (DL) have reached the state of the art of side channel attacks.
 The training phase builds a profiled model that is very efficient against one architecture and one leakage type.
-Deep Neural Networks (DNNs) are able to efficiently break implementations of AES that resisted to other types of SCA \parencite{Maghrebi_Portigliatti_Prouff_2016}.
+Deep Neural Networks (DNNs) are able to efficiently break implementations of AES that resisted to other types of SCA, particularly when desynchronization occurs \parencite{Maghrebi_Portigliatti_Prouff_2016}.
 % TODO: explain how DNNs are useful. Or not and just conclude
 
 \subsubsection{Non-profiled attacks}
@@ -414,7 +427,7 @@ They do not prevent SCA but with these countermeasures activated, an attacker ha
 
 Masking is an effective countermeasure of the second type.
 It consists in decorrelating the intermediate results from the secret values.
-To do that, a different random value is used each round and the operations are modified so that the final result does not depend on the random value anymore.
+To do that, a different random value is used each round and the operations are modified so that the final result does not depend on the secret value anymore.
 Implementing masking effectively is very specific to each architecture and each attacker model.
 The most common masking strategies are boolean (xor $\bigoplus$) and arithmetic (+ mod $2^n$). % TODO: choose a reference for masking
 
@@ -450,11 +463,11 @@ It applies the techniques of SCA to recover implementations details among:
 \subsubsection{SCARE of the GSM}
 The first SCARE attack was proposed by Novak in 2003 to retrieve the secret authentication and session key generation algorithm of the GSM standard \parencite{Novak_2003}.
 
-The COMP128-2 algorithm used in SIM cards is kept secret despite Kerckhoffs' principle.
+The COMP128-2 algorithm used in SIM cards was kept secret despite Kerckhoffs' principle.
 Knowing the architecture, the computations involved and the secret key, Novak retrieves the contents of substitution blocks implemented as lookup tables by analyzing the power consumption of the cipher.
 
 The idea behind the attack is to use \textbf{collision analysis}.
-It assumes that the same value of an input always leaks in the same way.
+It assumes that the same value of an input leads to similar leaks of the considered operation.
 Identifying equal intermediate results allows an attacker to restore the content of the lookup table and thus break the substitution block.
 
 To do that, it uses the means of measurements for all the possible values of a given input byte to distinguish them.
@@ -502,7 +515,7 @@ To recover one S-box of DES, 960 CPAs are necessary using this method on 2 input
 
 The Advanced Encryption Standard is a publicly-known and clearly defined architecture. 
 However, its parameter values can be changed to obtain a new cipher, that is not AES but has the same structure.
-Following Kerckhoffs' principle, this new cipher is probably less safe than a classic implementation of AES.
+Following Kerckhoffs' principle, this new cipher may not be safer than a classic implementation of AES.
 The following examples show how the secret parameters can be recovered using SCARE.
 
 \subsubsection{SCARE of SPNs}
@@ -541,7 +554,7 @@ In particular, the S-box has to be the same for each round and the key derivatio
 
 The second part does a SCARE of the AES assuming that the attacker can identify collisions of Hamming weights of inputs/outputs of different S-box computations.
 This model is weaker but more realistic.
-It can resist at least to simple masking.
+It can also be adapted to circumvent simple masking.
 
 \paragraph{}
 Clavier et al first consider an 8-bit Boolean masking that only refreshes the randomization of S-boxes at each execution because of time and memory constraints.
@@ -619,7 +632,7 @@ This inaccuracy makes classical attacks adaptation more difficult but also allow
 
 % \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014} presents the result of the DPA contest.
 
-\subsection{Attacks on hardware design}
+\subsection{SCARE on hardware design}
 
 The SCARE attacks on hardware design mostly focus Feistel networks.
 
