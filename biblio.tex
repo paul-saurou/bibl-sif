@@ -123,9 +123,9 @@
 
 Cryptography is the study of techniques for secure communication in the presence of adversarial behavior.
 It aims to guaranty confidentiality, integrity and authentication of a communication.
-An encryption algorithm takes plaintext and key as input and outputs a ciphertext, that can be deciphered with another secret key to retrieve the plaintext.
+An encryption algorithm takes plaintext and key as input and outputs a ciphertext, that can be deciphered with another key to retrieve the plaintext.
 For a symmetric algorithm, the encryption and the decryption keys are the same. 
-The confidentiality property states that the ciphertext must be indistinguishable from a random stream of bytes for someone that does not know the decryption key.
+The confidentiality property states that the ciphertext must be indistinguishable from a random stream of bytes for someone that does not know the secret decryption key.
 
 The confidentiality of modern cryptographic algorithms can either be proven mathematically or be based on difficult mathematical problems.
 However, these security proofs only apply to "black-box" adversaries, even if the algorithms are implemented in software or hardware modules.
@@ -168,14 +168,13 @@ Finally, we discuss prospective issues and early reflections on the upcoming wor
 
 \section{State of the art of Side Channel Attacks}
 
+Symmetric cryptography refers to the confidentiality protection of a communication between a sender and a receiver who share the same secret key.
+Symmetric ciphers historically relied on legacy substitution ciphers but since the end of World War 2, stream and block ciphers are the norm.
+
 In this section, we formally define the block ciphers we will be studying, in particular substitution–permutation network ciphers.
 We also introduce some of the most classical and standardized implementations.
 Then, we define several Side Channel Analysis state-of-the-art attacks on these implementations.
 Finally, we present the most common countermeasures to SCA. 
-
-
-Symmetric cryptography refers to the confidentiality protection of a communication between a sender and a receiver who share the same secret key.
-Symmetric ciphers historically relied on legacy substitution ciphers but since the end of WW2, stream and block ciphers are the norm.
 
 \textbf{Substitution ciphers} replace the units of plaintext by ciphertext in a defined manner, with the help of a key.
 Those are well known in history but can nowadays be easily decrypted using a frequency table or a similar mechanism.
@@ -197,11 +196,11 @@ They output a block of size $n$.
 
 The difference between different block ciphers is the definition of the function $E$ (and $D$).
 
-Most block ciphers are iterated, which means that $E$ consists in the repetition of round functions $R_i$, where $i$ is the index of the round.
-The inputs of $R_i$ are a round key $K_i$ and the intermediate value $V_{i-1}$.
+Most block ciphers are iterated, which means that $E$ consists in the repetition of $r$ round functions $R_i$, where $i$ is the index of the round between $1$ and $r$.
+The inputs of the function $R_i$ are a round key $K_i$ and the intermediate value $V_{i-1}$.
 $V_i$ is the output of the previous round function.
-If $M=V_0$ is the plaintext and there are $r$ rounds, then $ \forall i \in [ 1,r ] , V_i = R_i(V_{i-1},K_i) $ and $V_r = E(V_0) = E(M)$ is the ciphertext.
-$R_i(V_{i-1},K_i)$ is generally written $R_{K_i}(V_{i-1})$.
+The plaintext is $M=V_0$, the intermediate values are defined as following $ \forall i \in [ 1,r ] , V_i = R_i(V_{i-1},K_i) $ and the output $V_r = E(V_0) = E(M)$ is the ciphertext.
+Another notation for the round function is $R_{K_i}(V_{i-1})$.
 
 In most cipher designs, the round functions are chosen identical, except for the first and the last one.
 Beginning or ending the cipher with easily reversible operations that do not depend on the key is useless so the first and last rounds are often simpler than the other rounds.
@@ -219,6 +218,7 @@ With the previous notations, it is $R: (p,q, K_i) \mapsto (q,p \bigoplus f(q,K_i
 Both the security and the performance of the Feistel network depend on the Feistel function $f$.
 A specificity of Feistel schemes is that $f$ does not need to be invertible.
 The decryption is almost identical to the encryption, the only difference being the reversal of the round keys order.
+A sketch of a 3-rounds Feistel cipher is shown on Figure \ref{fig_feistel}
 
 \begin{center}
     \includegraphics[width=1\textwidth]{../images/feistel.png}
@@ -231,14 +231,13 @@ The decryption is almost identical to the encryption, the only difference being 
 
 \textbf{The Data Encryption Standard (DES)} is a Feistel network scheme that has been highly influential in the advancement of cryptography.
 It is unsecure due to its too short 56-bit key size which make it vulnerable to brute-force attacks.
-For historical reasons this design still is interesting.
+Even if it is not used anymore, the DES design is technically interesting to study.
 It consists in a 16 round Feistel network and operates on blocks of 64 bits.
-%The Feistel function of DES is shown on %TODO: figure
 
 First the 32-bit half-block is expanded to 48 bits using an expansion permutation function.
 Then the 48-bit block is xored with the round subkey and goes through a substitution layer.
 It is divided into eight 6-bit words which are replaced by 4-bit words using a lookup table.
-Finally, the 32 outputs are mixed according to a fixed permutation, the P-box.
+Finally, the 32 outputs are mixed according to a fixed permutation.
 
 
 \subsubsection{SPN ciphers}
@@ -257,18 +256,22 @@ More formally and with the previous notations, the round function is $R_{K_i} = 
     \item $\lambda : V'' \mapsto A \times V''$ the linear layer, where $\times$ is the matrix product and $A$, an $l\times l$ matrix, is a parameter of the cipher.
 \end{itemize}
 
+
+The decryption is done by reversing the process.
+It uses the inverses of the S-boxes and the permutations and apply the round keys in reversed order.
+
 In some SPN implementations, the final round sometimes skips the linear layer and an additional key addition is often performed after the final substitution layer.
 
 All the S-boxes do not have the same cryptographic properties.
-One is considered secure if it exhibits the avalanche effect, meaning that changing a small change in the input changes the output greatly.
+% One is considered secure if it exhibits the avalanche effect, meaning that a small change in the input changes the output greatly. % Avalanche effect is for the linear part
+One is considered secure if a small change in the input changes the output greatly.
 For example, one input bit should change almost half of the output bits on average.
 The S-boxes $(S_j)_{1\leq j \leq l}$ can be chosen identical to ease the implementation and assure that one is not weaker than the others.
-% TODO: Decryption
 
 \begin{center}
     \includegraphics[width=1\textwidth]{../images/spn_wiki.png}
     \captionsetup{hypcap=false}
-    \captionof{figure}{A sketch of a substitution–permutation network with 3 rounds, encrypting a plaintext block of 16 bits into a ciphertext block of 16 bits. The S-boxes are the Si, and the round keys are the Ki. Image inspired by wikipedia.org}
+    \captionof{figure}{A sketch of a substitution–permutation network with 3 rounds, encrypting a plaintext block of 16 bits into a ciphertext block of 16 bits. The S-boxes are the $S_i$, and the round keys are the $K_i$.}
     \label{fig_spn}
 \end{center}
 % TODO: change figure and caption (or add P box in text)
@@ -432,9 +435,6 @@ Implementing masking effectively is very specific to each architecture and each 
 The most common masking strategies are boolean (xor $\bigoplus$) and arithmetic (+ mod $2^n$). % TODO: choose a reference for masking
 
 
-
-
-
 These are the main side channel analysis techniques and countermeasures. 
 Nonetheless, it is also important to verify the security of cryptographic implementations against weaker opponents that do not know the exact implementation or its details.
 For cryptographic systems that choose to use proprietary algorithms or a specific set of parameters for a known standard, the architecture itself is a secret component that can be determined through SCA.
@@ -480,6 +480,7 @@ Because of that, table masking is an effective countermeasure.
 
 
 \subsubsection{SCARE of the DES}
+\label{scare_des}
 
 Another SCARE method relies on \textbf{correlation power analysis}.
 An example of such attack is the reverse engineering of DES, in which the authors assume that the structure and the constants are unknown \parencite{Daudigny_Ledig_Muller_Valette_2005}.
@@ -499,7 +500,7 @@ The scheduling information can then be used to isolate traces corresponding to e
 \textbf{CPA} techniques for reverse engineering can also be used under much weaker assumptions.
 Another attack is possible in the known plaintext or ciphertext attacker model \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010}.
 It retrieves the S-boxes of a modified DES using custom S-boxes by using brute force.
-To attack $i$ input bits of an S-box, the attacker only considers a set of traces that keep $6-i$ bits of the target S-box to a constant value (which is possible since the plaintext is known).
+To attack $i$ input bits of an S-box, the attacker only considers a set of traces that keep $6-i$ bits of the target S-box to a constant value (which is possible since the plaintext is chosen).
 A correlation analysis then recovers the partial function that maps the $i$ input bits that are modified to one output bit.
 Repeating this operation for all output bits and all group of input bits unravel the whole S-box design.
 To recover one S-box of DES, 960 CPAs are necessary using this method on 2 input bits at a time.
@@ -515,7 +516,7 @@ To recover one S-box of DES, 960 CPAs are necessary using this method on 2 input
 
 The Advanced Encryption Standard is a publicly-known and clearly defined architecture. 
 However, its parameter values can be changed to obtain a new cipher, that is not AES but has the same structure.
-Following Kerckhoffs' principle, this new cipher may not be safer than a classic implementation of AES.
+% Following Kerckhoffs' principle, this new cipher may not be safer than a classic implementation of AES.
 The following examples show how the secret parameters can be recovered using SCARE.
 
 \subsubsection{SCARE of SPNs}
@@ -554,10 +555,10 @@ In particular, the S-box has to be the same for each round and the key derivatio
 
 The second part does a SCARE of the AES assuming that the attacker can identify collisions of Hamming weights of inputs/outputs of different S-box computations.
 This model is weaker but more realistic.
-It can also be adapted to circumvent simple masking.
+It can also be adapted to evade simple masking.
 
 \paragraph{}
-Clavier et al first consider an 8-bit Boolean masking that only refreshes the randomization of S-boxes at each execution because of time and memory constraints.
+Clavier et al. first consider an 8-bit Boolean masking that only refreshes the randomization of S-boxes at each execution because of time and memory constraints.
 It is a common way to implement masking without it being too expensive.
 To address the masking countermeasure, they use the intra-traces setting, meaning that the attacker is able to detect collisions between two S-Box only in the same execution.
 Then collisions that happen during one execution can be exploited.
@@ -572,8 +573,8 @@ The process can be repeated with new plaintexts until enough relations are obtai
 The same can be done for the last round key.
 
 To recover the S-box, the same concept is used.
-Collisions between the first S-box and the last S-box computations are identified and can give information about a group of byte indexes by repeating the input bytes a different number of times for each value in a chosen plaintext.
-Each collision gives information about the byte values and repeating the operation for multiple plaintexts eventually gives enough information to retrieve the S-box content.
+Repeated collisions between the first S-box and the last S-box computations are identified and analyzed.
+Each collision gives information about the values of a small group of bytes and repeating the operation for multiple chosen plaintexts eventually gives enough information to retrieve the S-box content.
 
 Since the first and last round keys are known, the key scheduling algorithm can be found through exhaustive search.
 To recover the ShiftRows and MixColumns parameters, the attacker can craft plaintexts by only changing one byte to obtain a small subset of possible values for MixColumns columns and ShiftRows parameters.
@@ -661,20 +662,27 @@ The proposed optimization considers a Feistel function built by concatenating a 
 This strong assumption reduces the number of input/output pairs needed to reverse engineer the Feistel function to $2^d + (n-d)d$, where the linear compression is from $n$ bits to $d$ bits.
 The improvement makes the attack much more feasible in practice. 
 
+
+In 2010, Guilley et al. presented a SCARE of a DES implemented on FPGA \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010}.
+They used CPA and the attack has already been detailed in section \ref{scare_des}.
+
+
 %\parencite{Réal_Dubois_Guilloux_Valette_Drissi_2008} presents a SCARE attack on a general Feistel scheme with an hardware design.
 
-SAKURA board reference
+% SAKURA board reference
 
-\parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010} presents two SCARE attacks on the parameters of a LFSR and DES, implemented on FPGAs.
+% \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010} presents two SCARE attacks on the parameters of a LFSR and DES, implemented on FPGAs.
 
-SCA attacks on FPGAs (\parencite{Peeters_Standaert_Donckers_Quisquater_2005} or more relevantly \parencite{Standaert_Ors_Preneel_2004} or something more recent)
+% SCA attacks on FPGAs (\parencite{Peeters_Standaert_Donckers_Quisquater_2005} or more relevantly \parencite{Standaert_Ors_Preneel_2004} or something more recent)
 
 
 \section{Conclusion}
 
-\section*{References}
+% SAKURA board reference
 
-\printbibliography
+
+
+\printbibliography[title=Bibliographie]
 
 \end{document}
 %%% Local Variables:
