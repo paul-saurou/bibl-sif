@@ -678,18 +678,17 @@ They used CPA and the attack has already been detailed in section \ref{scare_des
 
 \section{Conclusion}
 
-This bibliographic report provides a comprehensive overview of block ciphers, SCA techniques, and SCARE methods and highlights the need for further research in this area.
+This bibliographic report presents a comprehensive overview of block ciphers, SCA techniques, and SCARE methods and highlights the need for further research in this area.
+The studies analyzed provide a synthesis of SCA, including the methods used, leakage models, assumptions made, and countermeasures proposed.
 
-The studies reviewed propose a synthetic overview of SCA in terms of methods, leakages models, assumptions made and countermeasures.
-The applications of SCA to reverse engineering are more recent and cover a wide range of possible scenarios, from recovering part of the parameters in a known architecture to discovering everything about a completely unknown cipher.
-When the cryptographic algorithm under study is implemented on hardware, SCA and SCARE are harder to do and to replicate.
-Efforts to standardize hardware SCA benchmarks have been made, notably during the DPA contest \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014}.
+The application of SCA to reverse engineering is a more recent development and encompasses a wide range of scenarios, from partial recovery of parameters in known architectures to uncovering all aspects of an unknown cipher.
+The implementation of cryptographic algorithms on hardware presents more difficulties for SCA and SCARE.
+However, efforts have been made to standardize hardware SCA benchmarks, as demonstrated in the DPA contest \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014}.
 Today, many studies on FPGAs use the same SASEBO capture board \parencite{Satoh}.
 
-The current literature focuses mainly on software implementations and Feistel ciphers, with very little attention paid to hardware SPN implementations.
+The current literature focuses mainly on software implementations and Feistel ciphers, with very little attention paid to hardware implementations of SPN ciphers.
 This internship aims to address this gap by evaluating the potential threat of SCARE on a hardware implementation of an SPN encryption scheme.
-To achieve this goal, theoretical attack paths will be proposed and tested on a simulated cipher. 
-Then a more practical part of the internship will be to use a capture board to get power consumption leakages and clean the hardware platform signals to adapt the proposed attacks to real traces.
+Theoretical attack paths will be proposed and tested on a simulated cipher, followed by a practical component using a capture board to obtain power consumption leakages and clean the hardware platform signals to adapt the attacks to real traces.
 
 
 
