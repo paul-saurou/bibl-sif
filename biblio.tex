@@ -5,8 +5,13 @@
 \usepackage{amsfonts} % For black board letters
 \usepackage{bbm} % For black board 1
 \usepackage[style=authoryear-comp, sorting=nyt, backend=biber]{biblatex} % For bibliography
+\usepackage[acronym]{glossaries}
 \addbibresource{Biblio.bib}
 
+\newacronym{sca}{SCA}{Side-Channel Analysis}
+\newacronym{scare}{SCARE}{Side-Channel Analysis for Reverse-Engineering}
+\newacronym{spn}{SPN}{Substitution–Permutation Network}
+\newacronym{aes}{AES}{Advanced Encryption Standard}
 
 \makeatletter
 
@@ -104,12 +109,12 @@
     The confidentiality of modern cryptographic algorithms can either be proven mathematically or be based on difficult mathematical problems.
     However, these security proofs do not account for the particularities of the implementations.
     The algorithms are typically embedded in smart cards or run on a CPU, and attackers can retrieve secret information by observing and exploiting their physical leakages (e.g. power consumption).
-    This type of attack is called side-channel analysis (SCA).
+    This type of attack is called \gls{sca}.
     Most often, the secret to recover is a private key while the details of the cryptographic system and its architecture are known.
-    However, SCA can also be used to reverse engineer some parts or the whole structure of a cryptographic algorithm.
-    This is called Side-Channel Analysis for Reverse-Engineering (SCARE).
-    The purpose of this internship is to evaluate the potential threat of using SCARE techniques on a hardware implementation of an SPN encryption scheme.
-    In this bibliographic review, we introduce the context of the internship, as well as prospective issues and state-of-the-art SCARE techniques on both software and hardware cryptographic systems.
+    However, \gls{sca} can also be used to reverse engineer some parts or the whole structure of a cryptographic algorithm.
+    This is called \gls{scare}.
+    The purpose of this internship is to evaluate the potential threat of using \gls{scare} techniques on a hardware implementation of an \gls{spn} encryption scheme.
+    In this bibliographic review, we introduce the context of the internship, as well as prospective issues and state-of-the-art \gls{scare} techniques on both software and hardware cryptographic systems.
 }
 
 
@@ -130,7 +135,7 @@ The confidentiality property states that the ciphertext must be indistinguishabl
 The confidentiality of modern cryptographic algorithms can either be proven mathematically or be based on difficult mathematical problems.
 However, these security proofs only apply to "black-box" adversaries, even if the algorithms are implemented in software or hardware modules.
 These modules, such as smart cards or computer programs running on a CPU, are physically accessible, and attackers can retrieve secret information by observing and exploiting their physical leakages (e.g. power consumption).
-This type of attack is called side-channel analysis (SCA).
+This type of attack is called \acrfull{sca}.
 
 Kerckhoffs stated that the security of a cryptographic device shall not rely on the secrecy of its mechanisms  \parencite{Kerckhoffs_1883}.
 Following his principles, adversaries are supposed to have a perfect knowledge of the cryptographic algorithms.
@@ -139,46 +144,46 @@ However, in some specific contexts, a secret implementation can add a layer of s
 For instance, a proprietary cipher can have its general structure revealed, but some constants kept secret.
 The algorithm itself can be kept secret, or the details of its implementation.
 
-SCA constitute a powerful tool to reverse-engineer some secret parts of a cryptographic implementation.
-This is called Side-Channel Analysis for Reverse-Engineering (SCARE) and it aims at recovering information about a cryptographic process (and not the manipulated data as usually targeted in side-channel attacks) based on the device power consumption.
+\gls{sca} constitute a powerful tool to reverse-engineer some secret parts of a cryptographic implementation.
+This is called \acrfull{scare} and it aims at recovering information about a cryptographic process (and not the manipulated data as usually targeted in side-channel attacks) based on the device power consumption.
 It has been studied for software implementations of cryptography and can retrieve the characteristics of a proprietary algorithm quite efficiently. %TODO citations
 However, few hardware implementations have been studied, and the existing literature is mainly targeted on Feistel ciphers.
 Feistel ciphers are a very common category of symmetric cryptography algorithms.
 The two most historically known Feistel ciphers are the US Data Encryption Standard (DES) and Blowfish. %TODO citation ?
-Another very popular category of symmetric cryptography algorithms is substitution–permutation networks (SPN).
-The most used SPN is the Advanced Encryption Standard (AES). %TODO citation ?
-The SCARE possibilities for hardware SPNs have almost not been studied yet, thus this internship aims at completing the SCARE studies for SPNs.
+Another very popular category of symmetric cryptography algorithms is \acrfull{spn}.
+The most used \gls{spn} is the \acrfull{aes}. %TODO citation ?
+The \gls{scare} possibilities for hardware \gls{spn} have almost not been studied yet, thus this internship aims at completing the \gls{scare} studies for \gls{spn}.
 
-More specifically, the purpose of this internship is to evaluate the potential threat of using SCARE techniques on a hardware implementation of an SPN encryption scheme.
+More specifically, the purpose of this internship is to evaluate the potential threat of using \gls{scare} techniques on a hardware implementation of an \gls{spn} encryption scheme.
 To do that, a good understanding of existing side channel attacks on both software and hardware implementations is needed.
-These attacks can be against SPNs specifically or other similar symmetric cryptographic algorithms.
-The goal is to propose new attack paths for the SPN hardware case and assess their relevance based on standardized benchmarks.
+These attacks can be against \gls{spn} specifically or other similar symmetric cryptographic algorithms.
+The goal is to propose new attack paths for the \gls{spn} hardware case and assess their relevance based on standardized benchmarks.
 Both simulated data and real traces from a hardware capture board will be tested.
 The different hypotheses and assumptions of each attack path will also be particularly looked upon.
 
-In this bibliographic review, we first define the ciphers and the main SCA techniques that will be used later.
-Secondly, we present an overview of SCARE methods and their applications.
+In this bibliographic review, we first define the ciphers and the main \gls{sca} techniques that will be used later.
+Secondly, we present an overview of \gls{scare} methods and their applications.
 The analyses are separated depending on the cipher they target and their attacker model.
-Thirdly, we focus on hardware implementations and explain the differences between software and hardware SCA and why there are fewer studies on hardware implementations.
-We present the published hardware SCARE attacks and show the lack of literature for SPN hardware SCARE.
+Thirdly, we focus on hardware implementations and explain the differences between software and hardware \gls{sca} and why there are fewer studies on hardware implementations.
+We present the published hardware \gls{scare} attacks and show the lack of literature for \gls{spn} hardware \gls{scare}.
 Finally, we discuss prospective issues and early reflections on the upcoming work in the conclusion.
 
 %In this bibliographic review, we introduce the context of the internship, as well as prospective issues and state-of-the-art techniques on both software and hardware cryptographic systems.
 
 
-\section{State of the art of Side Channel Attacks}
+\section{State of the art of Side-Channel Attacks}
 
 Symmetric cryptography refers to the confidentiality protection of a communication between a sender and a receiver who share the same secret key.
 Symmetric ciphers historically relied on legacy substitution ciphers but since the end of World War 2, stream and block ciphers are the norm.
 
 In this section, we formally define the block ciphers we will be studying, in particular substitution–permutation network ciphers.
 We also introduce some of the most classical and standardized implementations.
-Then, we define several Side Channel Analysis state-of-the-art attacks on these implementations.
-Finally, we present the most common countermeasures to SCA. 
+Then, we define several \acrlong{sca} state-of-the-art attacks on these implementations.
+Finally, we present the most common countermeasures to \gls{sca}. 
 
 \textbf{Substitution ciphers} replace the units of plaintext by ciphertext in a defined manner, with the help of a key.
 Those are well known in history but can nowadays be easily decrypted using a frequency table or a similar mechanism.
-They must not be mixed up with substitution-permutation networks that are a completely different kind of cipher.
+They must not be mixed up with \acrlong{spn} that are a completely different kind of cipher.
 
 \textbf{Stream ciphers} combine plaintext digits with a pseudo-random cipher digit stream called a keystream.
 
@@ -186,7 +191,7 @@ They must not be mixed up with substitution-permutation networks that are a comp
 Different modes of operation describe how to apply a block cipher to data larger than a block.
 Block ciphers are the most widely used type of cipher.
 
-This internship will focus on block ciphers, and especially on substitution–permutation networks.
+This internship will focus on block ciphers, and especially on \acrlong{spn}.
 
 \subsection{Block ciphers}
 
@@ -208,7 +213,7 @@ Beginning or ending the cipher with easily reversible operations that do not dep
 Choosing the number of rounds of an iterated block cipher scheme is a compromise between computing efficiency and cryptographic security.
 Too few rounds allow for cryptographic attacks and too many rounds make the cipher less efficient.
 
-We will now define two types of iterated block ciphers: Feistel networks and substitution–permutation networks.
+We will now define two types of iterated block ciphers: Feistel network and \acrlong{spn}.
 
 \subsubsection{Feistel ciphers}
 
@@ -240,13 +245,13 @@ It is divided into eight 6-bit words which are replaced by 4-bit words using a l
 Finally, the 32 outputs are mixed according to a fixed permutation.
 
 
-\subsubsection{SPN ciphers}
+\subsubsection{\gls{spn} ciphers}
 
-In substitution–permutation networks (SPN), the round function consists of a xor with the round key, followed by a substitution stage and a permutation stage.
+In \acrfull{spn}, the round function consists of a xor with the round key, followed by a substitution stage and a permutation stage.
 The intermediate state $V$ of size $n$ is xored with the round key and the result $V'$ is split into $l$ blocks $v'_1,v'_2,...,v'_l$ of equal length.
 During the substitution stage, the intermediate state is mixed in some non-linear way.
 It is based on a set of substitution-boxes (S-boxes) that substitute small block of bits (the input of the S-box) by another block of bits (the output of the S-box).
-For the SPN to be reversible, the S-boxes have to be bijective.
+For the \gls{spn} to be reversible, the S-boxes have to be bijective.
 The permutation stage rearranges all the bits of the output of the S-boxes each round, as shown on Figure \ref{fig_spn}.
 
 More formally and with the previous notations, the round function is $R_{K_i} = \lambda \circ \gamma \circ \sigma_{K_i}$ with
@@ -260,7 +265,7 @@ More formally and with the previous notations, the round function is $R_{K_i} = 
 The decryption is done by reversing the process.
 It uses the inverses of the S-boxes and the permutations and apply the round keys in reversed order.
 
-In some SPN implementations, the final round sometimes skips the linear layer and an additional key addition is often performed after the final substitution layer.
+In some \gls{spn} implementations, the final round sometimes skips the linear layer and an additional key addition is often performed after the final substitution layer.
 
 All the S-boxes do not have the same cryptographic properties.
 % One is considered secure if it exhibits the avalanche effect, meaning that a small change in the input changes the output greatly. % Avalanche effect is for the linear part
@@ -271,14 +276,14 @@ The S-boxes $(S_j)_{1\leq j \leq l}$ can be chosen identical to ease the impleme
 \begin{center}
     \includegraphics[width=1\textwidth]{../images/spn_wiki.png}
     \captionsetup{hypcap=false}
-    \captionof{figure}{A sketch of a substitution–permutation network with 3 rounds, encrypting a plaintext block of 16 bits into a ciphertext block of 16 bits. The S-boxes are the $S_i$, and the round keys are the $K_i$.}
+    \captionof{figure}{A sketch of a \acrlong{spn} with 3 rounds, encrypting a plaintext block of 16 bits into a ciphertext block of 16 bits. The S-boxes are the $S_i$, and the round keys are the $K_i$.}
     \label{fig_spn}
 \end{center}
 % TODO: change figure and caption (or add P box in text)
 
-\textbf{The Advanced Encryption Standard (AES)} is the replacement of DES chosen by the NIST in 2001.
+\textbf{The \acrfull{aes}} is the replacement of DES chosen by the NIST in 2001.
 The algorithm is a specification of the Rijndael design.
-It is an SPN that exists in three variants:
+It is an \gls{spn} that exists in three variants:
 \begin{itemize}
     \item 10 rounds and 128-bit keys,
     \item 12 rounds and 192-bit keys,
@@ -292,7 +297,7 @@ The 128-bit block plaintext is arranged in a 4$\times$4 byte matrix, as shown in
 %     m2 & m6 & m10 & m14 \\
 %     m3 & m7 & m11 & m15
 % \end{psmallmatrix}$
-The round keys are derived using the AES key schedule.
+The round keys are derived using the \gls{aes} key schedule.
 All the 16 S-boxes are the same, and their design is chosen to have no fixed points.
 The substitution operation is often referred as SubBytes operation.
 The linear layer is divided into a ShiftRows and a MixColumns operations.
@@ -324,20 +329,20 @@ During this step, each byte of the column influences all the four bytes of the o
 \begin{center}
     \includegraphics[width=1\textwidth]{../images/aes2.png}
     \captionsetup{hypcap=false}
-    \captionof{figure}{A sketch of a round of AES. S is the S-box and $K_i$ the round key.}
+    \captionof{figure}{A sketch of a round of \gls{aes}. S is the S-box and $K_i$ the round key.}
     \label{fig_aes}
 \end{center}
 
-The details of the AES standard are defined in the Federal Information Processing Standards Publication 197 (FIPS PUBS 197) \parencite{Standards2001}.
+The details of the \gls{aes} standard are defined in the Federal Information Processing Standards Publication 197 (FIPS PUBS 197) \parencite{Standards2001}.
 
-\subsection{Side Channel Analysis state-of-the-art attacks}
+\subsection{\acrlong{sca} state-of-the-art attacks}
 
 All the implementations of cryptographic algorithms in real world devices provide more information to an attacker than just the plaintext and the ciphertext.
 These side-channel leakages can consist in the timing of operations, power consumption, electromagnetic emanations, etc.
 An attacker can observe these leakages.
 However, such observations might require direct access to the cryptographic module or complex experiments with precise probes placement or capture boards.
 These leakages are not taken into account by the mathematical models and very little side-channel information is enough to break common ciphers that are proven safe against an attacker who can only access the inputs and the outputs.
-The SCA attacks, also called passive attacks and their corresponding countermeasures have been studied extensively over the past decades.
+The \gls{sca} attacks, also called passive attacks and their corresponding countermeasures have been studied extensively over the past decades.
 
 In the following, side channel attacks consist in associating the power consumption of a cryptographic module with the data processed by the module at the same time.
 Indeed, the physical properties of semiconductors link the data processed by a chip to its power consumption.
@@ -346,7 +351,7 @@ Indeed, the physical properties of semiconductors link the data processed by a c
 SPA can yield information about a device's operation as well as key material.
 It does not use a leakage model as it is a very simple analysis.
 
-For all the other SCA, side channel leakages are assumed to follow a leakage model.
+For all the other \gls{sca}, side channel leakages are assumed to follow a leakage model.
 This leakage model can either be profiled or non-profiled.
 The choice of a model depends on the system under study and its leakages.
 As it is a strong assumption to make, a wrong leakage model may not lead to a successful attack.
@@ -372,7 +377,7 @@ The authors also calculate the error probability of their test and explain how t
 
 Over the last years, \textbf{Deep Learning based Attacks} (DL) have reached the state of the art of side channel attacks.
 The training phase builds a profiled model that is very efficient against one architecture and one leakage type.
-Deep Neural Networks (DNNs) are able to efficiently break implementations of AES that resisted to other types of SCA, particularly when desynchronization occurs \parencite{Maghrebi_Portigliatti_Prouff_2016}.
+Deep Neural Networks (DNNs) are able to efficiently break implementations of \gls{aes} that resisted to other types of \gls{sca}, particularly when desynchronization occurs \parencite{Maghrebi_Portigliatti_Prouff_2016}.
 % TODO: explain how DNNs are useful. Or not and just conclude
 
 \subsubsection{Non-profiled attacks}
@@ -414,19 +419,19 @@ By making fewer assumptions about the model, MIA has worse performance than othe
 However, it could retrieve the key in a context where the trace is not linearly linked to the Hamming weight of the manipulated data.
 
 \paragraph{}
-These SCA aim to retrieve the key, or some other secret component, involved in a known algorithm.
+These \gls{sca} aim to retrieve the key, or some other secret component, involved in a known algorithm.
 Template attacks even use a replica of the attacked device to "prepare" the attacks.
 
 There are many countermeasures to prevent these attacks or make them more difficult.
-The following subsection is about the main Side Channel countermeasures.
+The following subsection is about the main \acrlong{sca} countermeasures.
 
-\subsection{Side Channel Analysis countermeasures}
+\subsection{\acrlong{sca} countermeasures}
 
-There are two types of SCA countermeasures. 
+There are two types of \gls{sca} countermeasures. 
 The first one consists in eliminating or reducing the leakages and the second one consists in making the leaked information unrelated to the secret data.
 
 Physical shielding, power line conditioning, noise addition and adding random delays are of the first type.
-They do not prevent SCA but with these countermeasures activated, an attacker has to collect more measurements.
+They do not prevent \gls{sca} but with these countermeasures activated, an attacker has to collect more measurements.
 
 Masking is an effective countermeasure of the second type.
 It consists in decorrelating the intermediate results from the secret values.
@@ -437,8 +442,8 @@ The most common masking strategies are boolean (xor $\bigoplus$) and arithmetic 
 
 These are the main side channel analysis techniques and countermeasures. 
 Nonetheless, it is also important to verify the security of cryptographic implementations against weaker opponents that do not know the exact implementation or its details.
-For cryptographic systems that choose to use proprietary algorithms or a specific set of parameters for a known standard, the architecture itself is a secret component that can be determined through SCA.
-The following section is about Side Channel Analysis Reverse Engineering (SCARE) and aims at assessing the gains or losses in security of choosing secret parameters for symmetric cryptography algorithms.
+For cryptographic systems that choose to use proprietary algorithms or a specific set of parameters for a known standard, the architecture itself is a secret component that can be determined through \gls{sca}.
+The following section is about \acrlong{scare} and aims at assessing the gains or losses in security of choosing secret parameters for symmetric cryptography algorithms.
 
 
 % \parencite{Chari_Rao_Rohatgi_2003} presents template attacks, "the strongest form of side channel attack possible in an information theoretic sense".
@@ -447,21 +452,21 @@ The following section is about Side Channel Analysis Reverse Engineering (SCARE)
 
 % Machine Learning is very popular right now. Thesis of \parencite{Masure}
 
-\section{Side-Channel Analysis for Reverse Engineering}
+\section{\acrlong{scare}}
 
-Side-Channel Analysis for Reverse Engineering (SCARE) uses side-channel information to reverse-engineer the secret parts of a cryptographic implementation.
-It applies the techniques of SCA to recover implementations details among:
+\acrfull{scare} uses side-channel information to reverse-engineer the secret parts of a cryptographic implementation.
+It applies the techniques of \gls{sca} to recover implementations details among:
 \begin{itemize}
-    \item secret constants such as the S-boxes of a SPN \parencite{Novak_2003},
+    \item secret constants such as the S-boxes of a \gls{spn} \parencite{Novak_2003},
     \item algorithmic structure such as the number of rounds or the size of the S-boxes used,
     \item which technologies and methods are used by the developer of the products.
 \end{itemize}
 
-\subsection{SCARE attacks on non AES ciphers}
+\subsection{\gls{scare} attacks on non \gls{aes} ciphers}
 \label{scare_non_aes}
 
-\subsubsection{SCARE of the GSM}
-The first SCARE attack was proposed by Novak in 2003 to retrieve the secret authentication and session key generation algorithm of the GSM standard \parencite{Novak_2003}.
+\subsubsection{\gls{scare} of the GSM}
+The first \gls{scare} attack was proposed by Novak in 2003 to retrieve the secret authentication and session key generation algorithm of the GSM standard \parencite{Novak_2003}.
 
 The COMP128-2 algorithm used in SIM cards was kept secret despite Kerckhoffs' principle.
 Knowing the architecture, the computations involved and the secret key, Novak retrieves the contents of substitution blocks implemented as lookup tables by analyzing the power consumption of the cipher.
@@ -479,10 +484,10 @@ It relies a lot on the quality of the leakages to identify identical lookups.
 Because of that, table masking is an effective countermeasure.
 
 
-\subsubsection{SCARE of the DES}
+\subsubsection{\gls{scare} of the DES}
 \label{scare_des}
 
-Another SCARE method relies on \textbf{correlation power analysis}.
+Another \gls{scare} method relies on \textbf{correlation power analysis}.
 An example of such attack is the reverse engineering of DES, in which the authors assume that the structure and the constants are unknown \parencite{Daudigny_Ledig_Muller_Valette_2005}.
 Strong assumptions on the quality of the power leakages allow the attacker to extract scheduling information for each bit at the clock cycle level using CPA.
 It means that the attacker knows exactly when each bit is manipulated.
@@ -494,7 +499,7 @@ Removing the noise and observing the scheduling information of the first round i
 The same thing can be done for the following S-box layer and the permutation table.
 The key scheduling algorithm can also be found using the same technique.
 
-The scheduling information can then be used to isolate traces corresponding to each S-box and perform another SCA attack to recover the key.
+The scheduling information can then be used to isolate traces corresponding to each S-box and perform another \gls{sca} attack to recover the key.
 
 
 \textbf{CPA} techniques for reverse engineering can also be used under much weaker assumptions.
@@ -512,20 +517,20 @@ To recover one S-box of DES, 960 CPAs are necessary using this method on 2 input
 
 %\parencite{Guilley_Sauvage_Micolod_Réal_Valette_20DES10} presents two SCARE attacks on the parameters of a LFSR and DES.
 
-\subsection{SCARE attacks on AES-like ciphers}
+\subsection{\gls{scare} attacks on \gls{aes}-like ciphers}
 
-The Advanced Encryption Standard is a publicly-known and clearly defined architecture. 
-However, its parameter values can be changed to obtain a new cipher, that is not AES but has the same structure.
+The \acrlong{aes} is a publicly-known and clearly defined architecture. 
+However, its parameter values can be changed to obtain a new cipher, that is not \gls{aes} but has the same structure.
 % Following Kerckhoffs' principle, this new cipher may not be safer than a classic implementation of AES.
-The following examples show how the secret parameters can be recovered using SCARE.
+The following examples show how the secret parameters can be recovered using \gls{scare}.
 
-\subsubsection{SCARE of SPNs}
+\subsubsection{\gls{scare} of \gls{spn}}
 \label{scare_of_spns}
 
-This SCARE method is designed for all SPN structures, including modified AES ciphers \parencite{Rivain_Roche_2013}.
+This \gls{scare} method is designed for all \gls{spn} structures, including modified \gls{aes} ciphers \parencite{Rivain_Roche_2013}.
 It considers that the attacker can select parts of the side-channel traces where the S-box computations are located.
 The attacker must be able to decide on collisions between the processed values from the observation of these traces.
-For that, any SCA method can be used.
+For that, any \gls{sca} method can be used.
 The attacker also knows the plaintext.
 If the plaintext is chosen, the complexity of the attack is lowered.
 
@@ -536,24 +541,24 @@ Given enough traces, the system can be solved.
 Then, only the remaining round keys are left to be discovered.
 It can be done using the same method as for the first one.
 
-This attack is very generic and can be applied to all SPNs schemes.
+This attack is very generic and can be applied to all \gls{spn} schemes.
 It also works if the leakage is noisy.
 
 According to the authors, a sufficient countermeasure is to combine masking and operation shuffling.
 Non-sequential execution is also outside the scope of the attack and make it inefficient.
 
 
-\subsubsection{SCARE of masked AES}
+\subsubsection{\gls{scare} of masked \gls{aes}}
 
-This very general attack on SPNs has been refined for AES in 2015 under more restrictive assumptions \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
+This very general attack on \gls{spn} has been refined for \gls{aes} in 2015 under more restrictive assumptions \parencite{Clavier_Isorez_Marion_Wurcker_2015}.
 The work is divided in two parts.
 
-The first one does a SCARE of the AES under a very similar model than the one presented in section \ref{scare_of_spns}.
+The first one does a \gls{scare} of the \gls{aes} under a very similar model than the one presented in section \ref{scare_of_spns}.
 It still considers that the attacker can identify collisions between two different S-Box computations.
-The difference is that this method can deal with masking and operation shuffling at the cost of only applying to AES with secret parameters.
-In particular, the S-box has to be the same for each round and the key derivation algorithm must be the one from AES with secret constants.
+The difference is that this method can deal with masking and operation shuffling at the cost of only applying to \gls{aes} with secret parameters.
+In particular, the S-box has to be the same for each round and the key derivation algorithm must be the one from \gls{aes} with secret constants.
 
-The second part does a SCARE of the AES assuming that the attacker can identify collisions of Hamming weights of inputs/outputs of different S-box computations.
+The second part does a \gls{scare} of the \gls{aes} assuming that the attacker can identify collisions of Hamming weights of inputs/outputs of different S-box computations.
 This model is weaker but more realistic.
 It can also be adapted to evade simple masking.
 
@@ -579,15 +584,15 @@ Each collision gives information about the values of a small group of bytes and 
 Since the first and last round keys are known, the key scheduling algorithm can be found through exhaustive search.
 To recover the ShiftRows and MixColumns parameters, the attacker can craft plaintexts by only changing one byte to obtain a small subset of possible values for MixColumns columns and ShiftRows parameters.
 Different byte values provide new sets of possible values and their intersection reveals the secret parameters.
-All the secret parameters of the AES implementation have then been discovered.
+All the secret parameters of the \gls{aes} implementation have then been discovered.
 
 \paragraph{}
-To perform their second SCARE attack on a modified AES under the Hamming weight model, Clavier et al. introduce and reason on special sets.
+To perform their second \gls{scare} attack on a modified \gls{aes} under the Hamming weight model, Clavier et al. introduce and reason on special sets.
 They are constituted of the inputs (respectively the outputs) that have a given Hamming weight and whose S-box output (respectively input) has another given Hamming weight that will collide under the Hamming weight collisions model.
 The attack first retrieves the first and last round keys and the ShiftRows parameters, then builds the special sets by analyzing collisions and non-collisions between chosen plaintexts, and reasons on their cardinal.
 The special sets allow to reduce the number of potential candidates for each byte value during the MixColumns and S-box retrieval stages.
 If a set has a cardinal of 1, then it identifies one unique value.
-This attack is very efficient on a simulated implementation and can recover the parameters of an AES using approximately 250 traces, whereas 400 (respectively 4000) are needed under the unprotected (respectively protected by a first-order Boolean masking and a random shuffling of operations) collision value model.
+This attack is very efficient on a simulated implementation and can recover the parameters of an \gls{aes} using approximately 250 traces, whereas 400 (respectively 4000) are needed under the unprotected (respectively protected by a first-order Boolean masking and a random shuffling of operations) collision value model.
 
 
 % Est-ce vraimentpertinent de parlerShiftRow d'une cryptanalyse dans un rapport sur les SCA ?
@@ -606,8 +611,8 @@ This can often be done without damaging the component.
 Because of that, it is more secure to implement the cryptographic algorithm into a specific device.
 It allows for better performances and better security through isolation of the component.
 
-Also, implementing cryptography in hardware modules makes it more difficult to use SCA techniques.
-Indeed, many SCA attacks assume that the execution is sequential, whereas cryptographic modules implemented on an ASIC or an FPGA use parallelization whenever it is possible.
+Also, implementing cryptography in hardware modules makes it more difficult to use \gls{sca} techniques.
+Indeed, many \gls{sca} attacks assume that the execution is sequential, whereas cryptographic modules implemented on an ASIC or an FPGA use parallelization whenever it is possible.
 Parallelizing the S-box lookups makes collisions based attacks impossible and increases the measurements needed for the other attacks.
 Then, hardware cryptographic implementations leakages are noisier, due to the physical setup and can use other countermeasures, such as desynchronized execution.
 So attacks on hardware devices cannot recover as much information as attacks on software algorithms.
@@ -617,7 +622,7 @@ For example, the precise scheduling information recovered in the attack presente
 Due to the higher cost of developing, evaluating and attacking hardware cryptographic implementations, and the lack of reproducibility of the studies due to different experimental setups (acquisition platform sensitivity, cryptographic algorithm implementation, board's noise), the literature on the subject is scarcer.
 
 To address the lack of uniformized benchmark, the DPA Contest v2 proposed in 2010 a common framework for multiple team to compare their attacks \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014}.
-The target is an FPGA implementation of an AES-128, and it considers known-message and profiled attacks.
+The target is an FPGA implementation of an \acrshort{aes}-128, and it considers known-message and profiled attacks.
 The acquisition board and its setup are precisely defined, and many metrics are used to evaluate the attacks: partial success rate, partial guessing entropy, global success rate, execution time and memory footprint.
 
 The results of the contest emphasize many differences between software side channel analysis and hardware side channel analysis.
@@ -633,9 +638,9 @@ This inaccuracy makes classical attacks adaptation more difficult but also allow
 
 % \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014} presents the result of the DPA contest.
 
-\subsection{SCARE on hardware design}
+\subsection{\gls{scare} on hardware design}
 
-The SCARE attacks on hardware design mostly focus Feistel networks.
+The \gls{scare} attacks on hardware design mostly focus Feistel networks.
 
 An attack targeting a general Feistel design was presented in 2008 \parencite{Réal_Dubois_Guilloux_Valette_Drissi_2008}.
 The experiments of this attack use electromagnetic radiations instead of the power consumption as side channel leakage.
@@ -655,7 +660,7 @@ The attacker can use the same technique to recover the rest of the Feistel funct
 If the level of noise is sufficiently low, the attacker can even do it bit by bit instead of four bits by four bits.
 
 To recover the whole Feistel function in the general case, it is considered as a vector function made of polynomials of the inputs bits and of degree $d$.
-If $n$ is the size of the input/output, there are around $n^d/d!$ coefficients for each one of the $n$ polynomials and as many SCA to perform.
+If $n$ is the size of the input/output, there are around $n^d/d!$ coefficients for each one of the $n$ polynomials and as many \gls{sca} to perform.
 However, commonly used schemes are more restrictive and thus reduce the number of possibilities to account for.
 
 The proposed optimization considers a Feistel function built by concatenating a random function and a linear compression that reduces the number of bits.
@@ -663,8 +668,9 @@ This strong assumption reduces the number of input/output pairs needed to revers
 The improvement makes the attack much more feasible in practice. 
 
 
-In 2010, Guilley et al. presented a SCARE of a DES implemented on FPGA \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010}.
-They used CPA and the attack has already been detailed in section \ref{scare_des}.
+In 2010, Guilley et al. presented a \gls{scare} of a DES implemented on FPGA \parencite{Guilley_Sauvage_Micolod_Réal_Valette_2010}.
+We already went into the details in Section \ref{scare_des}.
+In a nutshell, the attack retrieves the S-boxes of a modified DES using custom S-boxes by performing CPAs and retrieving .
 
 
 %\parencite{Réal_Dubois_Guilloux_Valette_Drissi_2008} presents a SCARE attack on a general Feistel scheme with an hardware design.
@@ -678,17 +684,24 @@ They used CPA and the attack has already been detailed in section \ref{scare_des
 
 \section{Conclusion}
 
-This bibliographic report presents a comprehensive overview of block ciphers, SCA techniques, and SCARE methods and highlights the need for further research in this area.
-The studies analyzed provide a synthesis of SCA, including the methods used, leakage models, assumptions made, and countermeasures proposed.
+This bibliographic report presents a comprehensive overview of block ciphers, \gls{sca} techniques, and \gls{scare} methods and highlights the need for further research in this area.
+The studies analyzed provide a synthesis of \gls{sca}, including the methods used, leakage models, assumptions made, and countermeasures proposed.
 
-The application of SCA to reverse engineering is a more recent development and encompasses a wide range of scenarios, from partial recovery of parameters in known architectures to uncovering all aspects of an unknown cipher.
-The implementation of cryptographic algorithms on hardware presents more difficulties for SCA and SCARE.
-However, efforts have been made to standardize hardware SCA benchmarks, as demonstrated in the DPA contest \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014}.
+The implementation of cryptographic algorithms on hardware presents more difficulties for \gls{sca} due to experimental issues, leading to noisier leakages.
+Also, because of the parallel execution on hardware modules, collisions attacks are not possible anymore.
+This type of \gls{sca} is very efficient on sequential software cryptographic implementations but cannot be applied on hardware.
+
+Comparing two \gls{sca} studies is challenging because of the variation in attacker and leakage models.  
+Efforts have been made to standardize hardware \gls{sca} benchmarks, as demonstrated in the DPA contest \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014}.
 Today, many studies on FPGAs use the same SASEBO capture board \parencite{Satoh}.
 
-The current literature focuses mainly on software implementations and Feistel ciphers, with very little attention paid to hardware implementations of SPN ciphers.
-This internship aims to address this gap by evaluating the potential threat of SCARE on a hardware implementation of an SPN encryption scheme.
-Theoretical attack paths will be proposed and tested on a simulated cipher, followed by a practical component using a capture board to obtain power consumption leakages and clean the hardware platform signals to adapt the attacks to real traces.
+The application of \gls{sca} to reverse engineering is a more recent development and encompasses a wide range of scenarios, from partial recovery of parameters in known architectures to uncovering all aspects of an unknown cipher.
+Most of the \gls{scare} literature focus on software, and the existing literature on hardware is mainly targeted on Feistel ciphers.
+This internship aims to address this gap by evaluating the potential threat of \gls{scare} on a hardware implementation of an \gls{spn} encryption scheme.
+This \gls{spn} is a tuned \gls{aes} cipher implemented on a dedicated \gls{sca} board known as SASEBO-GIII.
+Theoretical attack paths will be proposed and tested on a simulated cipher, followed by a practical component.
+It involves using the SASEBO-GIII capture board to obtain power consumption leakages and clean the hardware signals, followed by testing and adapting the theoretical attack paths to real traces.
+Special attention will be paid to explaining the impacts of the attacker model assumptions on the \gls{scare} attack.
 
 
 
