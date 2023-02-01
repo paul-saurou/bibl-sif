@@ -686,21 +686,24 @@ In a nutshell, Guilley et al. retrieve the S-boxes of a modified DES using custo
 
 This bibliographic report presents a comprehensive overview of block ciphers, \gls{sca} techniques, and \gls{scare} methods and highlights the need for further research in this area.
 The studies analyzed provide a synthesis of \gls{sca}, including the methods used, leakage models, assumptions made, and countermeasures proposed.
+The application of \gls{sca} to reverse engineering is a more recent development and encompasses a wide range of scenarios, from partial recovery of parameters in known architectures to uncovering all aspects of an unknown cipher.
 
-The implementation of cryptographic algorithms on hardware presents more difficulties for \gls{sca} due to experimental issues, leading to noisier leakages.
+Most of the \gls{scare} literature concerns software, and the existing literature on hardware is mainly focused on Feistel ciphers.
+This lack of literature may be partially explained by the experimental issues of performing SCA on a hardware module.
+Indeed, implementations of cryptographic algorithms on hardware are more difficult to analyze and provide noisier leakages than their software equivalents.
 Also, because of the parallel execution on hardware modules, collisions attacks are not possible anymore.
 This type of \gls{sca} is very efficient on sequential software cryptographic implementations but cannot be applied on hardware.
 
-Comparing two \gls{sca} studies is challenging because of the variation in attacker and leakage models.  
+Comparing two \gls{sca} or \gls{scare} studies is challenging because of the variations in attacker and leakage models.  
 Efforts have been made to standardize hardware \gls{sca} benchmarks, as demonstrated in the DPA contest \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014}.
 Today, many studies on FPGAs use the same SASEBO capture board \parencite{Satoh}.
+This same board will be used during the internship.
 
-The application of \gls{sca} to reverse engineering is a more recent development and encompasses a wide range of scenarios, from partial recovery of parameters in known architectures to uncovering all aspects of an unknown cipher.
-Most of the \gls{scare} literature focus on software, and the existing literature on hardware is mainly targeted on Feistel ciphers.
-This internship aims to address this gap by evaluating the potential threat of \gls{scare} on a hardware implementation of an \gls{spn} encryption scheme.
+This internship aims to address the gap in the SCARE literature on hardware \gls{spn} by evaluating the potential threat of \gls{scare} on a hardware implementation of a \gls{spn} encryption scheme.
 This \gls{spn} is a tuned \gls{aes} cipher implemented on a dedicated \gls{sca} board known as SASEBO-GIII.
 Theoretical attack paths will be proposed and tested on a simulated cipher, followed by a practical component.
-It involves using the SASEBO-GIII capture board to obtain power consumption leakages and clean the hardware signals, followed by testing and adapting the theoretical attack paths to real traces.
+It involves using the SASEBO-GIII capture board to obtain power consumption leakages and clean the hardware signals.
+This part will be followed by testing and adapting the theoretical attack paths to real traces.
 Special attention will be paid to explaining the impacts of the attacker model assumptions on the \gls{scare} attack.
 
 
