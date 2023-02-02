@@ -684,12 +684,13 @@ In a nutshell, Guilley et al. retrieve the S-boxes of a modified DES using custo
 
 \section{Conclusion}
 
-This bibliographic report presents a comprehensive overview of block ciphers, \gls{sca} techniques, and \gls{scare} methods and highlights the need for further research in this area.
-The studies analyzed provide a synthesis of \gls{sca}, including the methods used, leakage models, assumptions made, and countermeasures proposed.
+This bibliographic report presents a comprehensive overview of block ciphers, \gls{sca} techniques, and \gls{scare} methods.
+It also highlights the need for further research in this area.
+The analyzed studies provide a synthesis of \gls{sca}, including the methods used, leakage models, assumptions made, and countermeasures proposed.
 The application of \gls{sca} to reverse engineering is a more recent development and encompasses a wide range of scenarios, from partial recovery of parameters in known architectures to uncovering all aspects of an unknown cipher.
 
-Most of the \gls{scare} literature concerns software, and the existing literature on hardware is mainly focused on Feistel ciphers.
-This lack of literature may be partially explained by the experimental issues of performing SCA on a hardware module.
+Most of the \gls{scare} literature address software attacks, and the existing literature on hardware is mainly about Feistel ciphers.
+The experimental issues of performing \gls{sca} on a hardware module may partially explain this lack of literature.
 Indeed, implementations of cryptographic algorithms on hardware are more difficult to analyze and provide noisier leakages than their software equivalents.
 Also, because of the parallel execution on hardware modules, collisions attacks are not possible anymore.
 This type of \gls{sca} is very efficient on sequential software cryptographic implementations but cannot be applied on hardware.
