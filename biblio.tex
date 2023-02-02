@@ -686,27 +686,32 @@ In a nutshell, Guilley et al. retrieve the S-boxes of a modified DES using custo
 
 This bibliographic report presents a comprehensive overview of block ciphers, \gls{sca} techniques, and \gls{scare} methods.
 It also highlights the need for further research in this area.
-The analyzed studies provide a synthesis of \gls{sca}, including the methods used, leakage models, assumptions made, and countermeasures proposed.
+The analyzed studies provide a synthesis of \gls{sca}, including the methods used, leakage models, assumptions made, and proposed countermeasures.
 The application of \gls{sca} to reverse engineering is a more recent development and encompasses a wide range of scenarios, from partial recovery of parameters in known architectures to uncovering all aspects of an unknown cipher.
 
-Most of the \gls{scare} literature address software attacks, and the existing literature on hardware is mainly about Feistel ciphers.
-The experimental issues of performing \gls{sca} on a hardware module may partially explain this lack of literature.
-Indeed, implementations of cryptographic algorithms on hardware are more difficult to analyze and provide noisier leakages than their software equivalents.
+Implementations of cryptographic algorithms on hardware are more difficult to analyze and provide noisier leakages than their software equivalents.
 Also, because of the parallel execution on hardware modules, collisions attacks are not possible anymore.
-This type of \gls{sca} is very efficient on sequential software cryptographic implementations but cannot be applied on hardware.
+This type of \gls{sca} is very efficient on sequential software cryptographic implementations but cannot be applied on parallel hardware cryptographic implementations.
+The experimental issues of performing \gls{sca} on a hardware module may partially explain why most of the \gls{scare} literature address software attacks.
+The existing literature on hardware is mainly about Feistel ciphers.
+To address this gap in the \gls{scare} literature, this internship aims at studying and performing \gls{scare} on a hardware implementation of a SPN.
 
-Comparing two \gls{sca} or \gls{scare} studies is challenging because of the variations in attacker and leakage models.  
+Also, comparing two \gls{sca} or \gls{scare} studies is challenging because of the variations in attacker and leakage models.
+During the internship, multiple attacker models will be tested and the impact of their assumptions on the \gls{scare} attacks explained.
+The leakage model will be computed from real measurements of the studied hardware SPN implementation.
+
 Efforts have been made to standardize hardware \gls{sca} benchmarks, as demonstrated in the DPA contest \parencite{Clavier_Danger_Duc_Elaabid_Gérard_Guilley_Heuser_Kasper_Li_Lomné_et_al_2014}.
 Today, many studies on FPGAs use the same SASEBO capture board \parencite{Satoh}.
 This same board will be used during the internship.
 
-This internship aims to address the gap in the SCARE literature on hardware \gls{spn} by evaluating the potential threat of \gls{scare} on a hardware implementation of a \gls{spn} encryption scheme.
-This \gls{spn} is a tuned \gls{aes} cipher implemented on a dedicated \gls{sca} board known as SASEBO-GIII.
-Theoretical attack paths will be proposed and tested on a simulated cipher, followed by a practical component.
-It involves using the SASEBO-GIII capture board to obtain power consumption leakages and clean the hardware signals.
-This part will be followed by testing and adapting the theoretical attack paths to real traces.
-Special attention will be paid to explaining the impacts of the attacker model assumptions on the \gls{scare} attack.
 
+This internship aims to address the gap in the \gls{scare} literature on hardware \gls{spn} by evaluating the potential threat of \gls{scare} on a hardware implementation of a \gls{spn} encryption scheme.
+This \gls{spn} is a tuned \gls{aes} cipher implemented on a dedicated \gls{sca} board known as SASEBO-GIII.
+Theoretical attack paths will be proposed, either derived from literature or not.
+Their application involves the SASEBO-GIII capture board to obtain power consumption leakages and clean the hardware signals.
+A simulated leakage model will be deduced from these real traces.
+The theoretical attack paths will be tested and adapted to the simulated leakage model in a first step and the real traces in a second step.
+Special attention will be paid to explaining the impacts of the attacker model assumptions on the \gls{scare} attacks.
 
 
 % SAKURA board reference
